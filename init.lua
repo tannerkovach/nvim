@@ -518,9 +518,16 @@ require("lazy").setup({
       "sindrets/diffview.nvim"
     },
 
+    {
+      "rose-pine/neovim",
+      name = "rose-pine"
+    },
+
+
   },
   install = { },
   checker = { enabled = true },
 })
 
-vim.cmd.colorscheme "catppuccin-latte"
+vim.cmd.colorscheme "rose-pine"
+
