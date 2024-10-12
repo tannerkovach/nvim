@@ -81,6 +81,7 @@ vim.opt.updatetime = 250
 vim.opt.timeoutlen = 500
 
 vim.opt.cursorline = true
+vim.opt.background="light"
 
 vim.keymap.set('x', 'p', 'P', { silent = true })
 vim.keymap.set('n', 'R', '<C-r>')
@@ -134,10 +135,19 @@ require("lazy").setup({
       end
     },
 
-    -- COLORSCHEME
+
+    -- COLORSCHEMES
     {
-      "catppuccin/nvim", name = "catppuccin", priority = 1000
+      "catppuccin/nvim",
+      name = "catppuccin",
+      priority = 1000
     },
+
+    {
+      "rose-pine/neovim",
+      name = "rose-pine"
+    },
+
 
     -- TREESITTER
     {
@@ -169,10 +179,23 @@ require("lazy").setup({
     },
 
     -- INDENT LINES
-    { 
+    {
       'lukas-reineke/indent-blankline.nvim',
       main = 'ibl',
       opts = {},
+      config = function()
+        local hooks = require "ibl.hooks"
+        hooks.register(hooks.type.HIGHLIGHT_SETUP, function()
+          vim.api.nvim_set_hl(0, "IblIndent", { fg = "NvimLightGrey4"})
+        end)
+
+        require("ibl").setup {
+          indent = {
+            char = "▏", -- This character determines the width
+            highlight = "IblIndent"
+          }
+        }
+      end
     },
 
     -- SURROUND, MOVE LINES
@@ -220,7 +243,10 @@ require("lazy").setup({
       },
       keys = {
         { "s", mode = { "n", "x", "o" }, function() require("flash").jump() end, desc = "Flash" }
-      }
+      },
+      config = function ()
+        vim.api.nvim_set_hl(0, 'FlashLabel', { fg='#000000', bg='NvimLightGreen'})
+      end
     },
 
     {
@@ -516,16 +542,11 @@ require("lazy").setup({
 
     {
       "sindrets/diffview.nvim"
-    },
-
-    {
-      "rose-pine/neovim",
-      name = "rose-pine"
-    },
+    }
 
   },
   install = { },
   checker = { enabled = true },
 })
 
-vim.cmd("colorscheme rose-pine-main")
+vim.cmd("colorscheme default")
