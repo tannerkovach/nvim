@@ -523,11 +523,9 @@ require("lazy").setup({
       name = "rose-pine"
     },
 
-
   },
   install = { },
   checker = { enabled = true },
 })
 
-vim.cmd.colorscheme "rose-pine"
-
+vim.cmd("colorscheme rose-pine-main")
