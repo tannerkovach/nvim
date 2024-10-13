@@ -542,9 +542,9 @@ require("lazy").setup({
       config = true
     },
 
-    -- {
-    --   "sindrets/diffview.nvim"
-    -- }
+    {
+      "sindrets/diffview.nvim"
+    }
 
   },
   install = { },
