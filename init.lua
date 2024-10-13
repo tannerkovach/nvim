@@ -81,7 +81,7 @@ vim.opt.updatetime = 250
 vim.opt.timeoutlen = 500
 
 vim.opt.cursorline = true
-vim.opt.background="light"
+-- vim.opt.background="light" // re-add if I swap back to default
 
 vim.keymap.set('x', 'p', 'P', { silent = true })
 vim.keymap.set('n', 'R', '<C-r>')
@@ -542,9 +542,9 @@ require("lazy").setup({
       config = true
     },
 
-    {
-      "sindrets/diffview.nvim"
-    }
+    -- {
+    --   "sindrets/diffview.nvim"
+    -- }
 
   },
   install = { },
