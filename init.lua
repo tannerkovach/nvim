@@ -14,6 +14,8 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
   end
 end
 
+
+
 vim.api.nvim_create_autocmd("BufEnter", {
   callback = function()
     local buf = vim.api.nvim_get_current_buf()
@@ -81,7 +83,7 @@ vim.opt.updatetime = 250
 vim.opt.timeoutlen = 500
 
 vim.opt.cursorline = true
--- vim.opt.background="light" // re-add if I swap back to default
+vim.opt.background="dark"
 
 vim.keymap.set('x', 'p', 'P', { silent = true })
 vim.keymap.set('n', 'R', '<C-r>')
@@ -140,14 +142,8 @@ require("lazy").setup({
 
     -- COLORSCHEMES
     {
-      "catppuccin/nvim",
-      name = "catppuccin",
-      priority = 1000
-    },
-
-    {
       "rose-pine/neovim",
-      name = "rose-pine"
+      name = "rose-pine",
     },
 
 
@@ -504,14 +500,14 @@ require("lazy").setup({
                 -- diagnostics = { disable = { 'missing-fields' } },
               },
             },
-          },
+          }
         }
 
         require('mason').setup()
 
         local ensure_installed = vim.tbl_keys(servers or {})
         vim.list_extend(ensure_installed, {
-          'stylua', -- Used to format Lua code
+          'stylua','intelephense' -- Used to format Lua code
         })
         require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
@@ -530,16 +526,15 @@ require("lazy").setup({
     -- GIT/DIFF TOOL
     {
       "NeogitOrg/neogit",
+      commit="946e86a599c32ed1fc76f9910b406f30d869c6a4",
       dependencies = {
         "nvim-lua/plenary.nvim",         -- required
         "sindrets/diffview.nvim",        -- optional - Diff integration
 
         -- Only one of these is needed.
         "nvim-telescope/telescope.nvim", -- optional
-        "ibhagwan/fzf-lua",              -- optional
-        "echasnovski/mini.pick",         -- optional
       },
-      config = true
+      config = true,
     },
 
     {
@@ -550,5 +545,6 @@ require("lazy").setup({
   install = { },
   checker = { enabled = true },
 })
+
 
 vim.cmd("colorscheme rose-pine-main")
