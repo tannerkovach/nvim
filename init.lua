@@ -88,11 +88,6 @@ vim.opt.background="dark"
 vim.keymap.set('x', 'p', 'P', { silent = true })
 vim.keymap.set('n', 'R', '<C-r>')
 
-vim.keymap.set('n', '<C-Left>', '<C-w><C-h>', { desc = 'Move focus to the left window' })
-vim.keymap.set('n', '<C-Right>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
-vim.keymap.set('n', '<C-Down>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
-vim.keymap.set('n', '<C-Up>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
-
 vim.keymap.set('n', '<leader>on', ':ObsidianNew<CR>')
 
 vim.keymap.set('n', '<leader>sv', '<C-w>v', { desc = 'Split window vertically' }) -- split window vertically
@@ -124,7 +119,7 @@ require("lazy").setup({
     {
       'nvim-telescope/telescope.nvim', tag = '0.1.8',
       dependencies = { 'nvim-lua/plenary.nvim' },
-      config = function() 
+      config = function()
         local builtin = require 'telescope.builtin'
         vim.keymap.set('n', '<leader>sh', builtin.help_tags, { desc = '[S]earch [H]elp' })
         vim.keymap.set('n', '<leader>sk', builtin.keymaps, { desc = '[S]earch [K]eymaps' })
@@ -136,9 +131,24 @@ require("lazy").setup({
         vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
         vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
         vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
+        require('telescope').setup{
+          defaults = {
+            mappings = {
+              n = {
+                ['<c-d>'] = require('telescope.actions').delete_buffer
+              },
+              i = {
+                ['<c-d>'] = require('telescope.actions').delete_buffer
+              }
+            }
+          }
+        }
+
+        require('telescope').load_extension('fzf');
       end
     },
 
+    { 'nvim-telescope/telescope-fzf-native.nvim', build = 'make' },
 
     -- COLORSCHEMES
     {
@@ -539,7 +549,45 @@ require("lazy").setup({
 
     {
       "sindrets/diffview.nvim"
+    },
+
+    {
+      'briangwaltney/paren-hint.nvim',
+      lazy = false,
+      config = function()
+        require('paren-hint').setup {
+          include_paren = true,
+          anywhere_on_line = true,
+          show_same_line_opening = false,
+          highlight = 'Comment',
+
+          -- excluded filetypes
+          excluded_filetypes = {
+            'lspinfo',
+            'packer',
+            'checkhealth',
+            'help',
+            'man',
+            'gitcommit',
+            'TelescopePrompt',
+            'TelescopeResults',
+            '',
+          },
+          -- excluded buftypes
+          excluded_buftypes = {
+            'terminal',
+            'nofile',
+            'quickfix',
+            'prompt',
+          },
+        }
+      end,
+    },
+
+    {
+      'janiczek/vim-latte'
     }
+
 
   },
   install = { },
