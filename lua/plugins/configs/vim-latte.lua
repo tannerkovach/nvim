@@ -1,0 +1,3 @@
+return {
+  'janiczek/vim-latte'
+}
