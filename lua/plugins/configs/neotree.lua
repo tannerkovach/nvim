@@ -19,4 +19,7 @@ return {
       },
     },
   },
+  config = {
+    popup_border_style = "single",
+  }
 }

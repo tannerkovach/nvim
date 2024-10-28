@@ -54,6 +54,10 @@ vim.api.nvim_create_autocmd("ColorScheme", {
       bg = "NvimLightGreen",
       fg = "#000000"
     })
+    vim.api.nvim_set_hl(0, "StatusLine", { fg = "NvimLightGray1", bg = "NvimDarkCyan" })
+    vim.api.nvim_set_hl(0, "Cursor", { fg = "NvimLightGray1", bg = "NvimDarkCyan" })
+    vim.api.nvim_set_hl(0, "CurSearch", { fg = "NvimLightGray1", bg = "NvimDarkCyan" })
+    vim.api.nvim_set_hl(0, "DiffDelete", { fg = "#000000", bg = "NvimLightRed" })
   end,
 })
 

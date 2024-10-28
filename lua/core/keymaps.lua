@@ -23,3 +23,16 @@ keymap('n', '<leader>tf', '<cmd>tabnew %<CR>', { desc = 'Open current buffer in 
 
 keymap('n', '<leader>on', ':ObsidianNew<CR>')
 keymap('n', '<leader>g', '<cmd>Neogit<CR>')
+
+keymap('n', '<leader>dt', function()
+  MiniDiff.toggle_overlay()
+end, { desc = 'Toggle diff overlay' })
+
+keymap("n", "<C-a>", "<cmd>CodeCompanionActions<cr>", { noremap = true, silent = true })
+keymap("v", "<C-a>", "<cmd>CodeCompanionActions<cr>", { noremap = true, silent = true })
+keymap("n", "<leader>cc", "<cmd>CodeCompanionChat Toggle<cr>", { noremap = true, silent = true })
+keymap("v", "<leader>cc", "<cmd>CodeCompanionChat Toggle<cr>", { noremap = true, silent = true })
+keymap("v", "ga", "<cmd>CodeCompanionChat Add<cr>", { noremap = true, silent = true })
+
+-- Expand 'cc' into 'CodeCompanion' in the command line
+vim.cmd([[cab cc CodeCompanion]])
