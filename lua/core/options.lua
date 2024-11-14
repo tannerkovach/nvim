@@ -16,13 +16,22 @@ opt.expandtab = true
 opt.undofile = true
 opt.ignorecase = true
 opt.smartcase = true
-opt.signcolumn = 'yes'
+opt.signcolumn = "yes"
 opt.updatetime = 250
 opt.timeoutlen = 500
 opt.cursorline = true
 opt.background = "light"
-opt.mouse = 'a'
+opt.mouse = "a"
 opt.showmode = false
-opt.clipboard = 'unnamedplus'
+opt.clipboard = "unnamedplus"
 
-vim.cmd.colorscheme('default')
+vim.diagnostic.config({
+	virtual_text = false,
+	float = {
+		header = true,
+		border = "rounded",
+		focusable = true,
+	},
+})
+
+vim.cmd.colorscheme("default")

@@ -7,6 +7,7 @@ keymap('n', 'SS', ':w<CR>', { noremap = true, silent = true })
 keymap('n', 'YY', ':%y<CR>', { noremap = true, silent = true })
 keymap('n', 'VV', 'ggVG', { noremap = true, silent = true })
 keymap('n', 'DD', 'ggVGd', { noremap = true, silent = true })
+keymap('n', 'QQ', '<cmd>qa<CR>', { noremap = true, silent = true })
 
 -- Window management
 keymap('n', '<leader>sv', '<C-w>v', { desc = 'Split window vertically' })
@@ -22,7 +23,22 @@ keymap('n', '<leader>tp', '<cmd>tabp<CR>', { desc = 'Go to previous tab' })
 keymap('n', '<leader>tf', '<cmd>tabnew %<CR>', { desc = 'Open current buffer in new tab' })
 
 keymap('n', '<leader>on', ':ObsidianNew<CR>')
-keymap('n', '<leader>g', '<cmd>Neogit<CR>')
+keymap('n', '<leader>g', function()
+  local neogit_win = nil
+  for _, win in ipairs(vim.api.nvim_list_wins()) do
+    local buf = vim.api.nvim_win_get_buf(win)
+    local buf_name = vim.api.nvim_buf_get_name(buf)
+    if buf_name:match("Neogit") then
+      neogit_win = win
+      break
+    end
+  end
+  if neogit_win then
+    vim.api.nvim_win_close(neogit_win, true)
+  else
+    vim.cmd('Neogit')
+  end
+end)
 
 keymap('n', '<leader>dt', function()
   MiniDiff.toggle_overlay()
