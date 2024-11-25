@@ -54,6 +54,7 @@ return {
           -- Works also in Visual mode if mapping differs from apply and reset
           textobject = 'gh',
 
+
           -- Go to hunk range in corresponding direction
           goto_first = '[H',
           goto_prev = '[h',

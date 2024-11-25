@@ -13,47 +13,6 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 	end,
 })
 
--- vim.api.nvim_create_autocmd("BufWritePre", {
--- 	pattern = "*",
--- 	callback = function(args)
--- 		require("conform").format({ bufnr = args.buf })
--- 	end,
--- })
-
--- Set up RainbowTrails
-vim.api.nvim_create_autocmd({ "ColorScheme", "VimEnter" }, {
-	group = augroup("RainbowTrails"),
-	callback = function()
-		local highlights = {
-			{ "RainbowRed", "#004d40" },
-			{ "RainbowOrange", "#006d5b" },
-			{ "RainbowYellow", "#008d76" },
-			{ "RainbowGreen", "#00ad91" },
-			{ "RainbowBlue", "#00cdac" },
-			{ "RainbowIndigo", "#00edc7" },
-			{ "RainbowViolet", "#7fffd4" },
-		}
-
-		for _, hl in ipairs(highlights) do
-			vim.api.nvim_set_hl(0, hl[1], {
-				bg = hl[2],
-				fg = "NONE",
-				nocombine = true,
-				default = false,
-			})
-		end
-	end,
-})
-
--- Auto-activate RainbowTrails
-vim.api.nvim_create_autocmd("BufEnter", {
-	group = augroup("AutoRainbowTrails"),
-	callback = function()
-		vim.cmd("RainbowTrails")
-	end,
-})
-
--- Set up yank highlight colors
 vim.api.nvim_create_autocmd("ColorScheme", {
 	pattern = "*",
 	callback = function()
@@ -67,6 +26,12 @@ vim.api.nvim_create_autocmd("ColorScheme", {
 		vim.api.nvim_set_hl(0, "DiffDelete", { fg = "#000000", bg = "NvimLightRed" })
 		vim.api.nvim_set_hl(0, "NormalFloat", { bg = "NONE" })
 		vim.api.nvim_set_hl(0, "NeoTreeFloatTitle", { bg = "NONE" })
+		vim.api.nvim_set_hl(0, "TabLineSel", { fg = "NvimLightGrey1", bg = "NvimDarkCyan" })
+		vim.api.nvim_set_hl(0, "CursorLine", { bg = "#dddfe7" })
+		vim.api.nvim_set_hl(0, "Visual", {
+			bg = "NvimLightGreen",
+			fg = "#000000",
+    })
 	end,
 })
 
@@ -102,3 +67,6 @@ vim.api.nvim_create_autocmd("BufEnter", {
 		end
 	end,
 })
+
+vim.cmd('autocmd BufEnter * set formatoptions-=cro')
+vim.cmd('autocmd BufEnter * setlocal formatoptions-=cro')

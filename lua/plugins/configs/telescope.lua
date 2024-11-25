@@ -30,10 +30,12 @@ return {
           i = {
             ['<c-d>'] = require('telescope.actions').delete_buffer
           }
-        }
+        },
+        borderchars = { '─', '│', '─', '│', '┌', '┐', '┘', '└'},
       }
     })
 
     require('telescope').load_extension('fzf')
   end,
 }
+

@@ -21,4 +21,3 @@ require("lazy").setup({
   install = {},
   checker = { enabled = true },
 })
-

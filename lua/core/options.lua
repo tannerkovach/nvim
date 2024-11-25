@@ -6,7 +6,7 @@ g.maplocalleader = "\\"
 g.have_nerd_font = true
 
 opt.number = true
-opt.relativenumber = true
+opt.relativenumber = false
 opt.conceallevel = 1
 opt.breakindent = true
 opt.tabstop = 2
@@ -24,6 +24,7 @@ opt.background = "light"
 opt.mouse = "a"
 opt.showmode = false
 opt.clipboard = "unnamedplus"
+opt.laststatus = 3
 
 vim.diagnostic.config({
 	virtual_text = false,
@@ -33,5 +34,5 @@ vim.diagnostic.config({
 		focusable = true,
 	},
 })
-
+vim.o.cmdheight=0
 vim.cmd.colorscheme("default")
