@@ -25,10 +25,12 @@ return {
       defaults = {
         mappings = {
           n = {
-            ['<c-d>'] = require('telescope.actions').delete_buffer
+            ['<c-d>'] = require('telescope.actions').delete_buffer,
+            ['<esc>'] = require('telescope.actions').close
           },
           i = {
-            ['<c-d>'] = require('telescope.actions').delete_buffer
+            ['<c-d>'] = require('telescope.actions').delete_buffer,
+            ['<esc>'] = require('telescope.actions').close
           }
         },
         borderchars = { '─', '│', '─', '│', '┌', '┐', '┘', '└'},
