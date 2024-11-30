@@ -24,7 +24,7 @@ vim.api.nvim_create_autocmd("ColorScheme", {
 		vim.api.nvim_set_hl(0, "Cursor", { fg = "NvimLightGray1", bg = "NvimDarkCyan" })
 		vim.api.nvim_set_hl(0, "CurSearch", { fg = "NvimLightGray1", bg = "NvimDarkCyan" })
 		vim.api.nvim_set_hl(0, "DiffDelete", { fg = "#000000", bg = "NvimLightRed" })
-		vim.api.nvim_set_hl(0, "NormalFloat", { bg = "NONE" })
+		vim.api.nvim_set_hl(0, "NormalFloat", { bg = "#dddfe7" })
 		vim.api.nvim_set_hl(0, "NeoTreeFloatTitle", { bg = "NONE" })
 		vim.api.nvim_set_hl(0, "TabLineSel", { fg = "NvimLightGrey1", bg = "NvimDarkCyan" })
 		vim.api.nvim_set_hl(0, "CursorLine", { bg = "#dddfe7" })
@@ -70,3 +70,4 @@ vim.api.nvim_create_autocmd("ColorScheme", {
 
 vim.cmd('autocmd BufEnter * set formatoptions-=cro')
 vim.cmd('autocmd BufEnter * setlocal formatoptions-=cro')
+

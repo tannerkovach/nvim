@@ -19,7 +19,7 @@ keymap("n", "<leader>sq", "<C-w>=", { desc = "Make splits equal size" })
 --   vim.cmd("wincmd |")
 -- end, { desc = "Make splits equal size" })
 
-keymap("n", "<leader>so", "<cmd>SimpleZoomToggle<CR>") 
+keymap("n", "<leader>so", "<cmd>SimpleZoomToggle<CR>")
 keymap("n", "<leader>sx", "<cmd>close<CR>", { desc = "Close current split" })
 keymap("n", "<leader>fn", ":bnext<CR>", { desc = "Next Buffer" })
 keymap("n", "<leader>fp", ":bprev<CR>", { desc = "Prev Buffer" })
