@@ -8,11 +8,11 @@ return {
     --   vim.api.nvim_set_hl(0, "IblIndent", { fg = "NvimLightGrey4"})
     -- end)
 
-    require("ibl").setup {
+    require('ibl').setup {
       indent = {
-        char = "▏", -- This character determines the width
+        char = '▏', -- This character determines the width
         -- highlight = "IblIndent"
-      }
+      },
     }
-  end
+  end,
 }

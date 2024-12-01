@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 
 if not (vim.uv or vim.loop).fs_stat(lazypath) then
@@ -21,3 +22,10 @@ require("lazy").setup({
   install = {},
   checker = { enabled = true },
 })
+=======
+-- You can add your own plugins here or in other files in this directory!
+--  I promise not to create any merge conflicts in this directory :)
+--
+-- See the kickstart.nvim README for more information
+return {}
+>>>>>>> 00f1730 (new config based off kickstart again)
