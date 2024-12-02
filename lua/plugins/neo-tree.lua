@@ -13,14 +13,14 @@ return {
   opts = {
     popup_border_style = 'single',
     filesystem = {
-      filtered_items = {
-        visible = true,
-        hide_dotfiles = false,
-        hide_gitignored = false,
-        hide_by_name = {
-          'node_modules',
-        },
-      },
+      -- filtered_items = {
+      --   visible = true,
+      --   hide_dotfiles = false,
+      --   hide_gitignored = false,
+      --   hide_by_name = {
+      --     'node_modules',
+      --   },
+      -- },
       window = {
         mappings = {
           ['<leader>o'] = 'close_window',

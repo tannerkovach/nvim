@@ -15,12 +15,13 @@ vim.opt.undofile = true
 vim.opt.ignorecase = true
 vim.opt.smartcase = true
 vim.opt.signcolumn = 'yes'
+
 vim.opt.updatetime = 250
 vim.opt.list = true
 vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
 
 -- Preview substitutions live, as you type!
--- vim.opt.inccommand = 'split'
+vim.opt.inccommand = 'split'
 
 vim.opt.cursorline = true
 vim.opt.scrolloff = 10
@@ -36,6 +37,30 @@ vim.cmd 'autocmd BufEnter * setlocal formatoptions-=cro'
 -- [[ Basic Keymaps ]]
 
 local keymap = vim.keymap.set
+local virtual_text_enabled = true
+
+keymap('n', '<leader>gs', function()
+  virtual_text_enabled = not virtual_text_enabled
+  vim.diagnostic.config {
+    virtual_text = virtual_text_enabled,
+  }
+end)
+
+keymap('n', '<leader>gw', function()
+  vim.diagnostic.config {
+    virtual_text = {
+      severity = { min = vim.diagnostic.severity.WARN },
+    },
+  }
+end)
+
+keymap('n', '<leader>gh', function()
+  vim.diagnostic.config {
+    virtual_text = {
+      severity = { min = vim.diagnostic.severity.HINT },
+    },
+  }
+end)
 
 keymap('n', '<Esc>', '<cmd>nohlsearch<CR>')
 keymap('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
@@ -100,7 +125,7 @@ keymap('n', '<leader>tp', '<cmd>tabp<CR>', { desc = 'Go to previous tab' })
 keymap('n', '<leader>tf', '<cmd>tabnew %<CR>', { desc = 'Open current buffer in new tab' })
 
 keymap('n', '<leader>on', ':ObsidianNew<CR>')
-keymap('n', '<leader>g', function()
+keymap('n', '<leader>.', function()
   local neogit_win = nil
   for _, win in ipairs(vim.api.nvim_list_wins()) do
     local buf = vim.api.nvim_win_get_buf(win)
@@ -199,6 +224,9 @@ require('lazy').setup({
             },
           },
           borderchars = { '─', '│', '─', '│', '┌', '┐', '┘', '└' },
+          file_ignore_patterns = {
+            'node_modules',
+          },
         },
         -- pickers = {}
         extensions = {
@@ -394,11 +422,11 @@ require('lazy').setup({
           -- code, if the language server you are using supports them
           --
           -- This may be unwanted, since they displace some of your code
-          if client and client.supports_method(vim.lsp.protocol.Methods.textDocument_inlayHint) then
-            map('<leader>th', function()
-              vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled { bufnr = event.buf })
-            end, '[T]oggle Inlay [H]ints')
-          end
+          -- if client and client.supports_method(vim.lsp.protocol.Methods.textDocument_inlayHint) then
+          --   map('<leader>dh', function()
+          --     vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled { bufnr = event.buf })
+          --   end, '[T]oggle Inlay [H]ints')
+          -- end
         end,
       })
 
