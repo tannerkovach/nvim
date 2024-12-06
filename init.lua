@@ -18,14 +18,26 @@ vim.opt.signcolumn = 'yes'
 
 vim.opt.updatetime = 250
 vim.opt.list = true
-vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
+vim.opt.listchars = { tab = '▏ ', trail = '·', nbsp = '␣' }
+
+vim.opt.tabstop = 2
+vim.opt.softtabstop = 2
+vim.opt.shiftwidth = 2
+vim.opt.expandtab = true
 
 -- Preview substitutions live, as you type!
 vim.opt.inccommand = 'split'
 
 vim.opt.cursorline = true
 vim.opt.scrolloff = 10
-vim.opt.conceallevel = 1
+
+vim.api.nvim_create_autocmd('BufWinEnter', {
+  pattern = '*.md',
+  callback = function()
+    vim.opt_local.conceallevel = 1
+  end,
+})
+
 vim.opt.laststatus = 3
 vim.opt.wrap = false
 vim.opt.sidescroll = 1
@@ -39,28 +51,28 @@ vim.cmd 'autocmd BufEnter * setlocal formatoptions-=cro'
 local keymap = vim.keymap.set
 local virtual_text_enabled = true
 
-keymap('n', '<leader>gs', function()
-  virtual_text_enabled = not virtual_text_enabled
-  vim.diagnostic.config {
-    virtual_text = virtual_text_enabled,
-  }
-end)
-
-keymap('n', '<leader>gw', function()
-  vim.diagnostic.config {
-    virtual_text = {
-      severity = { min = vim.diagnostic.severity.WARN },
-    },
-  }
-end)
-
-keymap('n', '<leader>gh', function()
-  vim.diagnostic.config {
-    virtual_text = {
-      severity = { min = vim.diagnostic.severity.HINT },
-    },
-  }
-end)
+-- keymap('n', '<leader>gs', function()
+--   virtual_text_enabled = not virtual_text_enabled
+--   vim.diagnostic.config {
+--     virtual_text = virtual_text_enabled,
+--   }
+-- end)
+--
+-- keymap('n', '<leader>gw', function()
+--   vim.diagnostic.config {
+--     virtual_text = {
+--       severity = { min = vim.diagnostic.severity.WARN },
+--     },
+--   }
+-- end)
+--
+-- keymap('n', '<leader>gh', function()
+--   vim.diagnostic.config {
+--     virtual_text = {
+--       severity = { min = vim.diagnostic.severity.HINT },
+--     },
+--   }
+-- end)
 
 keymap('n', '<Esc>', '<cmd>nohlsearch<CR>')
 keymap('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
@@ -73,13 +85,23 @@ keymap('n', 'VV', 'ggVG', { noremap = true, silent = true })
 keymap('n', 'DD', 'ggVGd', { noremap = true, silent = true })
 keymap('n', 'QQ', '<cmd>qa<CR>', { noremap = true, silent = true })
 keymap('t', '<Esc><Esc>', '<C-\\><C-n>', { noremap = true, silent = true })
+keymap('t', '<C-/>', function()
+  -- First exit terminal mode
+  vim.cmd.stopinsert()
+  -- Then send the 'q' keystroke
+  vim.cmd 'q'
+end, { noremap = true, silent = true })
 
 -- Window management
 keymap('n', '<leader>sv', '<C-w>v', { desc = 'Split window vertically' })
 keymap('n', '<leader>sz', '<C-w>s', { desc = 'Split window horizontally' })
 keymap('n', '<leader>sq', '<C-w>=', { desc = 'Make splits equal size' })
+keymap('n', '<leader>so', function()
+  vim.cmd 'wincmd _'
+  vim.cmd 'wincmd |'
+end, { desc = 'Make splits equal size' })
+-- keymap('n', '<leader>so', '<cmd>SimpleZoomToggle<CR>')
 
-keymap('n', '<leader>so', '<cmd>SimpleZoomToggle<CR>')
 keymap('n', '<leader>sx', '<cmd>close<CR>', { desc = 'Close current split' })
 keymap('n', '<leader>fn', ':bnext<CR>', { desc = 'Next Buffer' })
 keymap('n', '<leader>fp', ':bprev<CR>', { desc = 'Prev Buffer' })
@@ -254,13 +276,13 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
 
       -- Slightly advanced example of overriding default behavior and theme
-      vim.keymap.set('n', '<leader>/', function()
-        -- You can pass additional configuration to Telescope to change the theme, layout, etc.
-        builtin.current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
-          winblend = 10,
-          previewer = false,
-        })
-      end, { desc = '[/] Fuzzily search in current buffer' })
+      -- vim.keymap.set('n', '<leader>/', function()
+      --   -- You can pass additional configuration to Telescope to change the theme, layout, etc.
+      --   builtin.current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
+      --     winblend = 10,
+      --     previewer = false,
+      --   })
+      -- end, { desc = '[/] Fuzzily search in current buffer' })
 
       -- It's also possible to pass additional configuration options.
       --  See `:help telescope.builtin.live_grep()` for information about particular keys

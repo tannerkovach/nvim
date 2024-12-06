@@ -17,6 +17,7 @@ return {
       folder = 'templates',
     },
     ui = {
+      enable = false,
       hl_groups = {
         -- The options are passed directly to `vim.api.nvim_set_hl()`. See `:help nvim_set_hl`.
         ObsidianTodo = { bold = true, fg = '#f78c6c' },
