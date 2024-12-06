@@ -2,7 +2,6 @@ return {
   'folke/snacks.nvim',
   priority = 1000,
   lazy = false,
-  ---@type snacks.Config
   opts = {
     bigfile = { enabled = true },
     dashboard = { example = 'compact_files' },
@@ -11,7 +10,20 @@ return {
       timeout = 3000,
     },
     quickfile = { enabled = true },
-    statuscolumn = { enabled = true },
+    -- statuscolumn = {
+    --   enabled = true,
+    --   left = { 'mark', 'sign' }, -- priority of signs on the left (high to low)
+    --   right = { 'fold', 'git' }, -- priority of signs on the right (high to low)
+    --   folds = {
+    --     open = true, -- show open fold icons
+    --     git_hl = true, -- use Git Signs hl for fold icons
+    --   },
+    --   git = {
+    --     -- patterns to match Git signs
+    --     patterns = { 'GitSign', 'MiniDiffSign' },
+    --   },
+    --   refresh = 50, -- refresh at most every 50ms
+    -- },
     toggle = {
       map = vim.keymap.set, -- keymap.set function to use
       which_key = false, -- integrate with which-key to show enabled/disabled icons and colors
@@ -79,6 +91,13 @@ return {
         Snacks.gitbrowse()
       end,
       desc = 'Git Browse',
+    },
+    {
+      '<leader>gg',
+      function()
+        Snacks.lazygit()
+      end,
+      desc = 'Lazygit',
     },
     {
       '<leader>gb',
