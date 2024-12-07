@@ -51,29 +51,6 @@ vim.cmd 'autocmd BufEnter * setlocal formatoptions-=cro'
 local keymap = vim.keymap.set
 local virtual_text_enabled = true
 
--- keymap('n', '<leader>gs', function()
---   virtual_text_enabled = not virtual_text_enabled
---   vim.diagnostic.config {
---     virtual_text = virtual_text_enabled,
---   }
--- end)
---
--- keymap('n', '<leader>gw', function()
---   vim.diagnostic.config {
---     virtual_text = {
---       severity = { min = vim.diagnostic.severity.WARN },
---     },
---   }
--- end)
---
--- keymap('n', '<leader>gh', function()
---   vim.diagnostic.config {
---     virtual_text = {
---       severity = { min = vim.diagnostic.severity.HINT },
---     },
---   }
--- end)
-
 keymap('n', '<Esc>', '<cmd>nohlsearch<CR>')
 keymap('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
 
