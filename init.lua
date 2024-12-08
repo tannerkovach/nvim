@@ -151,8 +151,31 @@ keymap('v', 'ga', '<cmd>CodeCompanionChat Add<cr>', { noremap = true, silent = t
 vim.cmd [[cab cc CodeCompanion]]
 
 keymap('n', '<leader>dt', function()
-  MiniDiff.toggle_overlay(1)
+  MiniDiff.toggle_overlay()
 end, { desc = 'Toggle diff overlay' })
+
+keymap('n', '<leader>ut', function()
+  virtual_text_enabled = not virtual_text_enabled
+  vim.diagnostic.config {
+    virtual_text = virtual_text_enabled,
+  }
+end)
+
+keymap('n', '<leader>ud', function()
+  vim.diagnostic.config {
+    virtual_text = {
+      severity = { min = vim.diagnostic.severity.WARN },
+    },
+  }
+end)
+
+keymap('n', '<leader>uh', function()
+  vim.diagnostic.config {
+    virtual_text = {
+      severity = { min = vim.diagnostic.severity.HINT },
+    },
+  }
+end)
 
 vim.api.nvim_create_autocmd('TextYankPost', {
   desc = 'Highlight when yanking (copying) text',
@@ -786,9 +809,12 @@ require('lazy').setup({
     'nvim-treesitter/nvim-treesitter',
     build = ':TSUpdate',
     main = 'nvim-treesitter.configs', -- Sets main module to use for opts
+    dependencies = {
+      'nvim-treesitter/nvim-treesitter-textobjects',
+    },
     -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
     opts = {
-      ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' },
+      ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc', 'liquid', 'javascript' },
       -- Autoinstall languages that are not installed
       auto_install = true,
       highlight = {
@@ -807,39 +833,11 @@ require('lazy').setup({
     --    - Show your current context: https://github.com/nvim-treesitter/nvim-treesitter-context
     --    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
   },
-
-  -- The following comments only work if you have downloaded the kickstart repo, not just copy pasted the
-  -- init.lua. If you want these files, they are in the repository, so you can just download them and
-  -- place them in the correct locations.
-
-  -- NOTE: Next step on your Neovim journey: Add/Configure additional plugins for Kickstart
-  --
-  --  Here are some example plugins that I've included in the Kickstart repository.
-  --  Uncomment any of the lines below to enable them (you will need to restart nvim).
-  --
-  -- require 'kickstart.plugins.debug',
-  -- require 'kickstart.plugins.indent_line',
-  -- require 'kickstart.plugins.lint',
-  -- require 'kickstart.plugins.autopairs',
-  -- require 'kickstart.plugins.neo-tree',
-  --  require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
-
-  -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
-  --    This is the easiest way to modularize your config.
-  --
-  --  Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
   {
     import = 'plugins',
   },
-  --
-  -- For additional information with loading, sourcing and examples see `:help lazy.nvim-🔌-plugin-spec`
-  -- Or use telescope!
-  -- In normal mode type `<space>sh` then write `lazy.nvim-plugin`
-  -- you can continue same window with `<space>sr` which resumes last telescope search
 }, {
   ui = {
-    -- If you are using a Nerd Font: set icons to an empty table which will use the
-    -- default lazy.nvim defined Nerd Font icons, otherwise define a unicode icons table
     icons = vim.g.have_nerd_font and {} or {
       cmd = '⌘',
       config = '🛠',
@@ -851,12 +849,6 @@ require('lazy').setup({
       runtime = '💻',
       require = '🌙',
       source = '📄',
-      start = '🚀',
-      task = '📌',
-      lazy = '💤 ',
     },
   },
 })
-
--- The line beneath this is called `modeline`. See `:help modeline`
--- vim: ts=2 sts=2 sw=2 et
