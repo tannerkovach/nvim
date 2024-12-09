@@ -11,6 +11,7 @@ return {
     { '<leader>,', ':Neotree toggle<CR>', { desc = 'NeoTree reveal', nowait = true } },
   },
   opts = {
+    close_if_last_window = true,
     popup_border_style = 'single',
     filesystem = {
       -- filtered_items = {

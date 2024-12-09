@@ -24,12 +24,8 @@ vim.opt.tabstop = 2
 vim.opt.softtabstop = 2
 vim.opt.shiftwidth = 2
 vim.opt.expandtab = true
-
--- Preview substitutions live, as you type!
 vim.opt.inccommand = 'split'
-
 vim.opt.cursorline = true
-vim.opt.scrolloff = 10
 
 vim.api.nvim_create_autocmd('BufWinEnter', {
   pattern = '*.md',
@@ -56,11 +52,9 @@ keymap('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q
 
 keymap('x', 'p', 'P', { silent = true })
 keymap('n', 'R', '<C-r>')
-keymap('n', 'SS', ':w<CR>', { noremap = true, silent = true })
+-- keymap('n', 'SS', ':w<CR>', { noremap = true, silent = true })
 keymap('n', 'YY', ':%y<CR>', { noremap = true, silent = true })
-keymap('n', 'VV', 'ggVG', { noremap = true, silent = true })
 keymap('n', 'DD', 'ggVGd', { noremap = true, silent = true })
-keymap('n', 'QQ', '<cmd>qa<CR>', { noremap = true, silent = true })
 keymap('t', '<Esc><Esc>', '<C-\\><C-n>', { noremap = true, silent = true })
 keymap('t', '<C-/>', function()
   -- First exit terminal mode
@@ -166,12 +160,24 @@ keymap('n', '<leader>ud', function()
     virtual_text = {
       severity = { min = vim.diagnostic.severity.WARN },
     },
+    signs = {
+      severity = { min = vim.diagnostic.severity.WARN },
+    },
+    underline = {
+      severity = { min = vim.diagnostic.severity.WARN },
+    },
   }
 end)
 
 keymap('n', '<leader>uh', function()
   vim.diagnostic.config {
     virtual_text = {
+      severity = { min = vim.diagnostic.severity.HINT },
+    },
+    signs = {
+      severity = { min = vim.diagnostic.severity.HINT },
+    },
+    underline = {
       severity = { min = vim.diagnostic.severity.HINT },
     },
   }
@@ -199,9 +205,9 @@ vim.opt.rtp:prepend(lazypath)
 
 require('lazy').setup({
 
-  {
-    'tpope/vim-sleuth',
-  },
+  'tpope/vim-sleuth',
+  'rhysd/clever-f.vim',
+  'tpope/vim-repeat',
 
   {
     'lewis6991/gitsigns.nvim',
