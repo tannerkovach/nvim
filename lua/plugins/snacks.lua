@@ -113,13 +113,13 @@ return {
       end,
       desc = 'Dismiss All Notifications',
     },
-    {
-      '<C-/>',
-      function()
-        Snacks.terminal.toggle()
-      end,
-      desc = 'Toggle Terminal',
-    },
+    -- {
+    --   '<C-/>',
+    --   function()
+    --     Snacks.terminal.toggle()
+    --   end,
+    --   desc = 'Toggle Terminal',
+    -- },
     -- {
     --   '<c-_>',
     --   function()

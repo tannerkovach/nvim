@@ -36,8 +36,10 @@ vim.api.nvim_create_autocmd('BufWinEnter', {
 
 vim.opt.laststatus = 3
 vim.opt.wrap = false
+vim.opt.linebreak = false
 vim.opt.sidescroll = 1
 vim.o.cmdheight = 0
+vim.o.splitbelow = true
 
 vim.cmd 'autocmd BufEnter * set formatoptions-=cro'
 vim.cmd 'autocmd BufEnter * setlocal formatoptions-=cro'
@@ -56,22 +58,29 @@ keymap('n', 'R', '<C-r>')
 keymap('n', 'YY', ':%y<CR>', { noremap = true, silent = true })
 keymap('n', 'DD', 'ggVGd', { noremap = true, silent = true })
 keymap('t', '<Esc><Esc>', '<C-\\><C-n>', { noremap = true, silent = true })
-keymap('t', '<C-/>', function()
-  -- First exit terminal mode
-  vim.cmd.stopinsert()
-  -- Then send the 'q' keystroke
-  vim.cmd 'q'
-end, { noremap = true, silent = true })
+-- keymap('t', '<C-/>', function()
+--   -- First exit terminal mode
+--   vim.cmd.stopinsert()
+--   -- Then send the 'q' keystroke
+--   vim.cmd 'q'
+-- end, { noremap = true, silent = true })
 
 -- Window management
 keymap('n', '<leader>sv', '<C-w>v', { desc = 'Split window vertically' })
 keymap('n', '<leader>sz', '<C-w>s', { desc = 'Split window horizontally' })
 keymap('n', '<leader>sq', '<C-w>=', { desc = 'Make splits equal size' })
+
+local is_maximized = false
 keymap('n', '<leader>so', function()
-  vim.cmd 'wincmd _'
-  vim.cmd 'wincmd |'
-end, { desc = 'Make splits equal size' })
--- keymap('n', '<leader>so', '<cmd>SimpleZoomToggle<CR>')
+  if is_maximized then
+    vim.cmd 'wincmd ='
+    is_maximized = false
+  else
+    vim.cmd 'wincmd _'
+    vim.cmd 'wincmd |'
+    is_maximized = true
+  end
+end, { desc = 'Toggle split maximization' })
 
 keymap('n', '<leader>sx', '<cmd>close<CR>', { desc = 'Close current split' })
 keymap('n', '<leader>fn', ':bnext<CR>', { desc = 'Next Buffer' })
@@ -91,10 +100,43 @@ keymap('t', '<C-w><Up>', function()
   vim.cmd.wincmd 'k'
 end, { noremap = true, silent = true })
 
-keymap('n', '<leader>me', '<cmd>BufTermNext<CR>', { desc = 'Next Terminal Buffer' })
+keymap('n', '<leader>mn', '<cmd>BufTermNext<CR>', { desc = 'Next Terminal Buffer' })
 keymap('n', '<leader>mp', '<cmd>BufTermPrev<CR>', { desc = 'Prev Terminal Buffer' })
 keymap('n', '<leader>mt', '<cmd>BufTermEnter<CR>', { desc = 'Open Terminal Buffer' })
 keymap('n', '<leader>mx', '<cmd>bdelete!<CR>', { desc = 'Close Terminal Buffer' })
+
+local mini_term_buf = nil
+local mini_term_win = nil
+
+local function toggle_mini_term()
+  if mini_term_buf == nil then
+    -- Create new terminal
+    vim.cmd.new()
+    vim.cmd.term()
+    vim.api.nvim_win_set_height(0, 10)
+    mini_term_buf = vim.api.nvim_get_current_buf()
+    mini_term_win = vim.api.nvim_get_current_win()
+  elseif mini_term_win and vim.api.nvim_win_is_valid(mini_term_win) then
+    -- Hide terminal window
+    vim.api.nvim_win_hide(mini_term_win)
+    mini_term_win = nil
+  else
+    -- Show terminal window
+    vim.cmd.split()
+    vim.api.nvim_win_set_height(0, 10)
+    vim.api.nvim_win_set_buf(0, mini_term_buf)
+    mini_term_win = vim.api.nvim_get_current_win()
+  end
+end
+
+keymap('n', '<C-/>', toggle_mini_term)
+keymap('t', '<C-/>', function()
+  -- Hide window directly from terminal mode
+  if mini_term_win and vim.api.nvim_win_is_valid(mini_term_win) then
+    vim.api.nvim_win_hide(mini_term_win)
+    mini_term_win = nil
+  end
+end)
 
 keymap('n', '<leader>mv', function()
   vim.cmd 'vsplit'
@@ -206,7 +248,7 @@ vim.opt.rtp:prepend(lazypath)
 require('lazy').setup({
 
   'tpope/vim-sleuth',
-  'rhysd/clever-f.vim',
+  -- 'rhysd/clever-f.vim',
   'tpope/vim-repeat',
 
   {
@@ -256,7 +298,20 @@ require('lazy').setup({
             'node_modules',
           },
         },
-        -- pickers = {}
+        pickers = {
+          live_grep = {
+            vimgrep_arguments = {
+              'rg',
+              '--color=never',
+              '--no-heading',
+              '--with-filename',
+              '--line-number',
+              '--column',
+              '--fixed-strings', -- this disables regex
+              '--smart-case',
+            },
+          },
+        },
         extensions = {
           ['ui-select'] = {
             require('telescope.themes').get_dropdown(),
