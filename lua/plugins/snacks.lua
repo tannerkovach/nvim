@@ -54,8 +54,29 @@ return {
         wo = { wrap = true }, -- Wrap notifications
       },
     },
+    scroll = { enabled = true },
+    indent = { enabled = true },
+    animate = {
+      duration = 20, -- ms per step
+      easing = 'linear',
+      fps = 60, -- frames per second. Global setting for all animations
+    },
   },
   keys = {
+    {
+      '<leader>z',
+      function()
+        Snacks.zen()
+      end,
+      desc = 'Toggle Zen Mode',
+    },
+    {
+      '<leader>Z',
+      function()
+        Snacks.zen.zoom()
+      end,
+      desc = 'Toggle Zoom',
+    },
     {
       '<leader>/',
       function()

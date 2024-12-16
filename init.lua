@@ -1,39 +1,42 @@
+--  ███╗   ██╗███████╗ ██████╗ ██╗   ██╗██╗███╗   ███╗
+--  ████╗  ██║██╔════╝██╔═══██╗██║   ██║██║████╗ ████║
+--  ██╔██╗ ██║█████╗  ██║   ██║██║   ██║██║██╔████╔██║
+--  ██║╚██╗██║██╔══╝  ██║   ██║╚██╗ ██╔╝██║██║╚██╔╝██║
+--  ██║ ╚████║███████╗╚██████╔╝ ╚████╔╝ ██║██║ ╚═╝ ██║
+--  ╚═╝  ╚═══╝╚══════╝ ╚═════╝   ╚═══╝  ╚═╝╚═╝     ╚═╝
+
+-- ╭──────────────────────────────────────────────────────────╮
+-- │                     Global Options                       │
+-- ╰──────────────────────────────────────────────────────────╯
+
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 vim.g.have_nerd_font = true
+
+-- ╭──────────────────────────────────────────────────────────╮
+-- │                     Local Options                        │
+-- ╰──────────────────────────────────────────────────────────╯
+
 vim.opt.number = true
 vim.opt.relativenumber = true
 vim.opt.mouse = 'a'
 vim.opt.showmode = false
-
-vim.schedule(function()
-  vim.opt.clipboard = 'unnamedplus'
-end)
-
+vim.opt.clipboard = 'unnamedplus'
 vim.opt.breakindent = true
 vim.opt.undofile = true
 vim.opt.ignorecase = true
 vim.opt.smartcase = true
 vim.opt.signcolumn = 'yes'
-
 vim.opt.updatetime = 250
 vim.opt.list = true
 vim.opt.listchars = { tab = '▏ ', trail = '·', nbsp = '␣' }
-
 vim.opt.tabstop = 2
 vim.opt.softtabstop = 2
 vim.opt.shiftwidth = 2
 vim.opt.expandtab = true
 vim.opt.inccommand = 'split'
 vim.opt.cursorline = true
-
-vim.api.nvim_create_autocmd('BufWinEnter', {
-  pattern = '*.md',
-  callback = function()
-    vim.opt_local.conceallevel = 1
-  end,
-})
-
+vim.o.scrolloff = 5
 vim.opt.laststatus = 3
 vim.opt.wrap = false
 vim.opt.linebreak = false
@@ -41,51 +44,55 @@ vim.opt.sidescroll = 1
 vim.o.cmdheight = 0
 vim.o.splitbelow = true
 
-vim.cmd 'autocmd BufEnter * set formatoptions-=cro'
-vim.cmd 'autocmd BufEnter * setlocal formatoptions-=cro'
-
--- [[ Basic Keymaps ]]
+-- ╭──────────────────────────────────────────────────────────╮
+-- │                     Keymaps Options                      │
+-- ╰──────────────────────────────────────────────────────────╯
 
 local keymap = vim.keymap.set
 local virtual_text_enabled = true
 
+-- NOTE: General Keymaps
+
 keymap('n', '<Esc>', '<cmd>nohlsearch<CR>')
 keymap('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
-
 keymap('x', 'p', 'P', { silent = true })
 keymap('n', 'R', '<C-r>')
--- keymap('n', 'SS', ':w<CR>', { noremap = true, silent = true })
+keymap('n', 'ZZ', ':w<CR>', { noremap = true, silent = true })
 keymap('n', 'YY', ':%y<CR>', { noremap = true, silent = true })
 keymap('n', 'DD', 'ggVGd', { noremap = true, silent = true })
 keymap('t', '<Esc><Esc>', '<C-\\><C-n>', { noremap = true, silent = true })
--- keymap('t', '<C-/>', function()
---   -- First exit terminal mode
---   vim.cmd.stopinsert()
---   -- Then send the 'q' keystroke
---   vim.cmd 'q'
--- end, { noremap = true, silent = true })
 
--- Window management
+-- NOTE: Window Management
+
 keymap('n', '<leader>sv', '<C-w>v', { desc = 'Split window vertically' })
 keymap('n', '<leader>sz', '<C-w>s', { desc = 'Split window horizontally' })
 keymap('n', '<leader>sq', '<C-w>=', { desc = 'Make splits equal size' })
-
-local is_maximized = false
-keymap('n', '<leader>so', function()
-  if is_maximized then
-    vim.cmd 'wincmd ='
-    is_maximized = false
-  else
-    vim.cmd 'wincmd _'
-    vim.cmd 'wincmd |'
-    is_maximized = true
-  end
-end, { desc = 'Toggle split maximization' })
-
 keymap('n', '<leader>sx', '<cmd>close<CR>', { desc = 'Close current split' })
+
 keymap('n', '<leader>fn', ':bnext<CR>', { desc = 'Next Buffer' })
 keymap('n', '<leader>fp', ':bprev<CR>', { desc = 'Prev Buffer' })
 keymap('n', '<leader>fx', ':bdelete<CR>', { desc = 'Delete Buffer' })
+
+keymap('n', '<leader>to', '<cmd>tabnew<CR>', { desc = 'Open new tab' })
+keymap('n', '<leader>tx', '<cmd>tabclose<CR>', { desc = 'Close current tab' })
+keymap('n', '<leader>tn', '<cmd>tabn<CR>', { desc = 'Go to next tab' })
+keymap('n', '<leader>tp', '<cmd>tabp<CR>', { desc = 'Go to previous tab' })
+keymap('n', '<leader>tf', '<cmd>tabnew %<CR>', { desc = 'Open current buffer in new tab' })
+
+keymap('n', '<leader>mn', '<cmd>BufTermNext<CR>', { desc = 'Next Terminal Buffer' })
+keymap('n', '<leader>mp', '<cmd>BufTermPrev<CR>', { desc = 'Prev Terminal Buffer' })
+keymap('n', '<leader>mt', '<cmd>BufTermEnter<CR>', { desc = 'Open Terminal Buffer' })
+keymap('n', '<leader>mx', '<cmd>bdelete!<CR>', { desc = 'Close Terminal Buffer' })
+keymap('n', '<leader>mv', function()
+  vim.cmd 'vsplit'
+  vim.cmd 'wincmd l'
+  vim.cmd 'terminal'
+end, { desc = 'Split + Terminal' })
+keymap('n', '<leader>mz', function()
+  vim.cmd 'split'
+  vim.cmd 'wincmd j'
+  vim.cmd 'terminal'
+end, { desc = 'Split Horizontal + Terminal' })
 
 keymap('t', '<C-w><Left>', function()
   vim.cmd.wincmd 'h'
@@ -100,11 +107,6 @@ keymap('t', '<C-w><Up>', function()
   vim.cmd.wincmd 'k'
 end, { noremap = true, silent = true })
 
-keymap('n', '<leader>mn', '<cmd>BufTermNext<CR>', { desc = 'Next Terminal Buffer' })
-keymap('n', '<leader>mp', '<cmd>BufTermPrev<CR>', { desc = 'Prev Terminal Buffer' })
-keymap('n', '<leader>mt', '<cmd>BufTermEnter<CR>', { desc = 'Open Terminal Buffer' })
-keymap('n', '<leader>mx', '<cmd>bdelete!<CR>', { desc = 'Close Terminal Buffer' })
-
 local mini_term_buf = nil
 local mini_term_win = nil
 
@@ -113,6 +115,7 @@ local function toggle_mini_term()
     -- Create new terminal
     vim.cmd.new()
     vim.cmd.term()
+    vim.cmd.startinsert()
     vim.api.nvim_win_set_height(0, 10)
     mini_term_buf = vim.api.nvim_get_current_buf()
     mini_term_win = vim.api.nvim_get_current_win()
@@ -129,6 +132,8 @@ local function toggle_mini_term()
   end
 end
 
+-- NOTE: Mini Terminal
+
 keymap('n', '<C-/>', toggle_mini_term)
 keymap('t', '<C-/>', function()
   -- Hide window directly from terminal mode
@@ -138,27 +143,28 @@ keymap('t', '<C-/>', function()
   end
 end)
 
-keymap('n', '<leader>mv', function()
-  vim.cmd 'vsplit'
-  vim.cmd 'wincmd l'
-  vim.cmd 'terminal'
-end, { desc = 'Split + Terminal' })
-keymap('n', '<leader>mz', function()
-  vim.cmd 'split'
-  vim.cmd 'wincmd j'
-  vim.cmd 'terminal'
-end, { desc = 'Split Horizontal + Terminal' })
+-- NOTE: Formatting
 
 keymap('n', '<leader>ff', function()
   require('conform').format()
 end, { desc = 'Format buffer' })
 
-keymap('n', '<leader>to', '<cmd>tabnew<CR>', { desc = 'Open new tab' })
-keymap('n', '<leader>tx', '<cmd>tabclose<CR>', { desc = 'Close current tab' })
-keymap('n', '<leader>tn', '<cmd>tabn<CR>', { desc = 'Go to next tab' })
-keymap('n', '<leader>tp', '<cmd>tabp<CR>', { desc = 'Go to previous tab' })
-keymap('n', '<leader>tf', '<cmd>tabnew %<CR>', { desc = 'Open current buffer in new tab' })
+-- NOTE: Plugin Keymaps
 
+-- MiniDiff
+keymap('n', '<leader>dt', function()
+  MiniDiff.toggle_overlay()
+end, { desc = 'Toggle diff overlay' })
+
+-- CodeCompanion
+keymap('n', '<C-a>', '<cmd>CodeCompanionActions<cr>', { noremap = true, silent = true })
+keymap('v', '<C-a>', '<cmd>CodeCompanionActions<cr>', { noremap = true, silent = true })
+keymap('n', '<leader>cc', '<cmd>CodeCompanionChat Toggle<cr>', { noremap = true, silent = true })
+keymap('v', '<leader>cc', '<cmd>CodeCompanionChat Toggle<cr>', { noremap = true, silent = true })
+keymap('n', '<leader>cn', '<cmd>CodeCompanionChat<cr>', { noremap = true, silent = true })
+keymap('v', 'ga', '<cmd>CodeCompanionChat Add<cr>', { noremap = true, silent = true })
+
+-- Obsidian
 keymap('n', '<leader>on', ':ObsidianNew<CR>')
 keymap('n', '<leader>.', function()
   local neogit_win = nil
@@ -177,18 +183,7 @@ keymap('n', '<leader>.', function()
   end
 end)
 
-keymap('n', '<C-a>', '<cmd>CodeCompanionActions<cr>', { noremap = true, silent = true })
-keymap('v', '<C-a>', '<cmd>CodeCompanionActions<cr>', { noremap = true, silent = true })
-keymap('n', '<leader>cc', '<cmd>CodeCompanionChat Toggle<cr>', { noremap = true, silent = true })
-keymap('v', '<leader>cc', '<cmd>CodeCompanionChat Toggle<cr>', { noremap = true, silent = true })
-keymap('n', '<leader>cn', '<cmd>CodeCompanionChat<cr>', { noremap = true, silent = true })
-keymap('v', 'ga', '<cmd>CodeCompanionChat Add<cr>', { noremap = true, silent = true })
-
-vim.cmd [[cab cc CodeCompanion]]
-
-keymap('n', '<leader>dt', function()
-  MiniDiff.toggle_overlay()
-end, { desc = 'Toggle diff overlay' })
+-- NOTE: Diagnostics
 
 keymap('n', '<leader>ut', function()
   virtual_text_enabled = not virtual_text_enabled
@@ -196,7 +191,6 @@ keymap('n', '<leader>ut', function()
     virtual_text = virtual_text_enabled,
   }
 end)
-
 keymap('n', '<leader>ud', function()
   vim.diagnostic.config {
     virtual_text = {
@@ -210,7 +204,6 @@ keymap('n', '<leader>ud', function()
     },
   }
 end)
-
 keymap('n', '<leader>uh', function()
   vim.diagnostic.config {
     virtual_text = {
@@ -225,6 +218,15 @@ keymap('n', '<leader>uh', function()
   }
 end)
 
+vim.cmd [[cab cc CodeCompanion]]
+
+-- ╭──────────────────────────────────────────────────────────╮
+-- │                  Autocommands Options                    │
+-- ╰──────────────────────────────────────────────────────────╯
+
+vim.cmd 'autocmd BufEnter * set formatoptions-=cro'
+vim.cmd 'autocmd BufEnter * setlocal formatoptions-=cro'
+
 vim.api.nvim_create_autocmd('TextYankPost', {
   desc = 'Highlight when yanking (copying) text',
   group = vim.api.nvim_create_augroup('kickstart-highlight-yank', { clear = true }),
@@ -233,7 +235,16 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   end,
 })
 
--- [[ Install `lazy.nvim` plugin manager ]]
+vim.api.nvim_create_autocmd('BufWinEnter', {
+  pattern = '*.md',
+  callback = function()
+    vim.opt_local.conceallevel = 1
+  end,
+})
+
+-- ╭──────────────────────────────────────────────────────────╮
+-- │                  Lazy Plugin Manager                     │
+-- ╰──────────────────────────────────────────────────────────╯
 
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
 if not (vim.uv or vim.loop).fs_stat(lazypath) then
@@ -427,7 +438,10 @@ require('lazy').setup({
         callback = function(event)
           -- NOTE: Remember that Lua is a real programming language, and as such it is possible
           -- to define small helper and utility functions so you don't have to repeat yourself.
-          --
+          local client = vim.lsp.get_client_by_id(event.data.client_id)
+          if client then
+            client.server_capabilities.documentHighlightProvider = false
+          end
           -- In this case, we create a function that lets us more easily define mappings specific
           -- for LSP related items. It sets the mode, buffer and description for us each time.
           local map = function(keys, func, desc, mode)
