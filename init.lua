@@ -57,9 +57,8 @@ keymap('n', '<Esc>', '<cmd>nohlsearch<CR>')
 keymap('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
 keymap('x', 'p', 'P', { silent = true })
 keymap('n', 'R', '<C-r>')
-keymap('n', 'ZZ', ':w<CR>', { noremap = true, silent = true })
+keymap('n', 'FF', ':w<CR>', { noremap = true, silent = true })
 keymap('n', 'YY', ':%y<CR>', { noremap = true, silent = true })
-keymap('n', 'DD', 'ggVGd', { noremap = true, silent = true })
 keymap('t', '<Esc><Esc>', '<C-\\><C-n>', { noremap = true, silent = true })
 
 -- NOTE: Window Management
@@ -150,6 +149,9 @@ keymap('n', '<leader>ff', function()
 end, { desc = 'Format buffer' })
 
 -- NOTE: Plugin Keymaps
+
+-- Oil.nvim
+keymap('n', '-', '<cmd>Oil<CR>', { desc = 'Toggle Oil.nvim' })
 
 -- MiniDiff
 keymap('n', '<leader>dt', function()
