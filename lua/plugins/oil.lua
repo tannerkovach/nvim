@@ -70,7 +70,7 @@ return {
         ['<C-t>'] = { 'actions.select', opts = { tab = true } },
         ['<C-p>'] = 'actions.preview',
         ['<C-c>'] = { 'actions.close', mode = 'n' },
-        ['q'] = { 'actions.close', mode = 'n' },
+        ['<C-q>'] = { 'actions.close', mode = 'n' },
         ['<C-l>'] = 'actions.refresh',
         ['-'] = { 'actions.parent', mode = 'n' },
         ['_'] = { 'actions.open_cwd', mode = 'n' },
