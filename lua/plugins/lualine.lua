@@ -3,11 +3,15 @@ return {
   dependencies = { 'nvim-tree/nvim-web-devicons' },
 
   config = function()
-    local harpoon_files = require 'harpoon_files'
+    -- local harpoon_files = require 'harpoon_files'
     require('lualine').setup {
       sections = {
         lualine_c = {
-          { harpoon_files.lualine_component },
+          {
+            'filename',
+            path = 1,
+          },
+          -- { harpoon_files.lualine_component },
           -- {
           --   require("noice").api.status.message.get_hl,
           --   cond = require("noice").api.status.message.has,

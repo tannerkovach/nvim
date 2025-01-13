@@ -53,7 +53,10 @@ local keymap = vim.keymap.set
 local virtual_text_enabled = true
 
 -- NOTE: General Keymaps
-
+keymap('n', '<C-CR>', 'm`o<Esc>``')
+keymap('n', '<M-CR>', 'm`O<Esc>``')
+keymap('n', '<CR>', 'o<ESC>')
+keymap('n', '<S-CR>', 'O<ESC>')
 keymap('n', '<Esc>', '<cmd>nohlsearch<CR>')
 keymap('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
 keymap('x', 'p', 'P', { silent = true })
@@ -79,9 +82,9 @@ keymap('n', '<leader>to', '<cmd>tabnew<CR>', { desc = 'Open new tab' })
 keymap('n', '<leader>tx', '<cmd>tabclose<CR>', { desc = 'Close current tab' })
 keymap('n', '<leader>tn', '<cmd>tabn<CR>', { desc = 'Go to next tab' })
 keymap('n', '<leader>tp', '<cmd>tabp<CR>', { desc = 'Go to previous tab' })
-keymap('n', '<C-t>', '<cmd>tabn<CR>', { desc = 'Go to next tab' }) -- alternative keybind for use with terminal safe counterpart
+keymap('n', '<C-b>', '<cmd>tabn<CR>', { desc = 'Go to next tab' }) -- alternative keybind for use with terminal safe counterpart
 keymap('n', '<C-p>', '<cmd>tabp<CR>', { desc = 'Go to previous tab' }) -- alternative keybind for use with terminal safe counterpart
-keymap('t', '<C-t>', '<cmd>tabn<CR>', { desc = 'Go to next tab' })
+keymap('t', '<C-b>', '<cmd>tabn<CR>', { desc = 'Go to next tab' })
 keymap('t', '<C-p>', '<cmd>tabp<CR>', { desc = 'Go to previous tab' })
 keymap('n', '<leader>tf', '<cmd>tabnew %<CR>', { desc = 'Open current buffer in new tab' })
 
@@ -91,6 +94,8 @@ keymap('n', '<leader>fp', ':bprev<CR>', { desc = 'Prev Buffer' })
 keymap('n', '<leader>fx', ':bdelete<CR>', { desc = 'Delete Buffer' })
 
 -- Terminal Buffers
+keymap('n', '<C-t>', '<cmd>BufTermNext<CR>', { desc = 'Next Terminal Buffer' })
+keymap('t', '<C-t>', '<cmd>BufTermNext<CR>', { desc = 'Next Terminal Buffer' })
 keymap('n', '<leader>mn', '<cmd>BufTermNext<CR>', { desc = 'Next Terminal Buffer' })
 keymap('n', '<leader>mp', '<cmd>BufTermPrev<CR>', { desc = 'Prev Terminal Buffer' })
 keymap('n', '<leader>mt', '<cmd>BufTermEnter<CR>', { desc = 'Open Terminal Buffer' })
@@ -106,66 +111,67 @@ keymap('n', '<leader>mz', function()
   vim.cmd 'terminal'
 end, { desc = 'Split Horizontal + Terminal' })
 
-keymap('t', '<C-w><Left>', function()
+keymap('t', '<C-Left>', function()
   vim.cmd.wincmd 'h'
 end, { noremap = true, silent = true })
-keymap('t', '<C-w><Right>', function()
+keymap('t', '<C-Right>', function()
   vim.cmd.wincmd 'l'
 end, { noremap = true, silent = true })
-keymap('t', '<C-w><Down>', function()
+keymap('t', '<C-Down>', function()
   vim.cmd.wincmd 'j'
 end, { noremap = true, silent = true })
-keymap('t', '<C-w><Up>', function()
+keymap('t', '<C-Up>', function()
   vim.cmd.wincmd 'k'
 end, { noremap = true, silent = true })
 
--- NOTE: Mini Terminal
+keymap('n', '<C-Left>', function()
+  vim.cmd.wincmd 'h'
+end, { noremap = true, silent = true })
+keymap('n', '<C-Right>', function()
+  vim.cmd.wincmd 'l'
+end, { noremap = true, silent = true })
+keymap('n', '<C-Down>', function()
+  vim.cmd.wincmd 'j'
+end, { noremap = true, silent = true })
+keymap('n', '<C-Up>', function()
+  vim.cmd.wincmd 'k'
+end, { noremap = true, silent = true })
 
-local mini_terms = {
-  bufs = { nil, nil },
-  wins = { nil, nil },
+-- -- NOTE: Mini Terminal
+
+local mini_term = {
+  buf = nil,
+  win = nil,
 }
 
-local function toggle_mini_terms()
-  if mini_terms.bufs[1] == nil then
-    -- Create new terminals
+local function toggle_mini_term()
+  if mini_term.buf == nil then
+    -- Create new terminal
     vim.cmd.new()
     vim.cmd.term()
-    mini_terms.bufs[1] = vim.api.nvim_get_current_buf()
-    mini_terms.wins[1] = vim.api.nvim_get_current_win()
-
-    vim.cmd.vnew()
-    vim.cmd.term()
     vim.api.nvim_win_set_height(0, 15)
-    mini_terms.bufs[2] = vim.api.nvim_get_current_buf()
-    mini_terms.wins[2] = vim.api.nvim_get_current_win()
-
+    mini_term.buf = vim.api.nvim_get_current_buf()
+    mini_term.win = vim.api.nvim_get_current_win()
     vim.cmd.startinsert()
-  elseif mini_terms.wins[1] and vim.api.nvim_win_is_valid(mini_terms.wins[1]) then
-    -- Hide terminal windows
-    vim.api.nvim_win_hide(mini_terms.wins[1])
-    vim.api.nvim_win_hide(mini_terms.wins[2])
-    mini_terms.wins = { nil, nil }
+  elseif mini_term.win and vim.api.nvim_win_is_valid(mini_term.win) then
+    -- Hide terminal window
+    vim.api.nvim_win_hide(mini_term.win)
+    mini_term.win = nil
   else
-    -- Show terminal windows
+    -- Show terminal window
     vim.cmd.split()
     vim.api.nvim_win_set_height(0, 15)
-    vim.api.nvim_win_set_buf(0, mini_terms.bufs[1])
-    mini_terms.wins[1] = vim.api.nvim_get_current_win()
-
-    vim.cmd.vsplit()
-    vim.api.nvim_win_set_buf(0, mini_terms.bufs[2])
-    mini_terms.wins[2] = vim.api.nvim_get_current_win()
+    vim.api.nvim_win_set_buf(0, mini_term.buf)
+    mini_term.win = vim.api.nvim_get_current_win()
   end
 end
 
-keymap('n', '<C-/>', toggle_mini_terms)
+keymap('n', '<C-/>', toggle_mini_term)
 keymap('t', '<C-/>', function()
   -- Hide windows directly from terminal mode
-  if mini_terms.wins[1] and vim.api.nvim_win_is_valid(mini_terms.wins[1]) then
-    vim.api.nvim_win_hide(mini_terms.wins[1])
-    vim.api.nvim_win_hide(mini_terms.wins[2])
-    mini_terms.wins = { nil, nil }
+  if mini_term.win and vim.api.nvim_win_is_valid(mini_term.win) then
+    vim.api.nvim_win_hide(mini_term.win)
+    mini_term.wins = { nil, nil }
   end
 end)
 
@@ -196,7 +202,7 @@ keymap('v', 'ga', '<cmd>CodeCompanionChat Add<cr>', { noremap = true, silent = t
 vim.cmd [[cab cc CodeCompanion]]
 
 -- Obsidian
-keymap('n', '<leader>on', ':ObsidianNew<CR>')
+keymap('n', '<leader>xn', ':ObsidianNew<CR>')
 keymap('n', '<leader>.', function()
   local neogit_win = nil
   for _, win in ipairs(vim.api.nvim_list_wins()) do
@@ -216,13 +222,13 @@ end)
 
 -- NOTE: Diagnostics
 
-keymap('n', '<leader>ut', function()
+keymap('n', '<leader>yt', function()
   virtual_text_enabled = not virtual_text_enabled
   vim.diagnostic.config {
     virtual_text = virtual_text_enabled,
   }
 end)
-keymap('n', '<leader>ud', function()
+keymap('n', '<leader>yd', function()
   vim.diagnostic.config {
     virtual_text = {
       severity = { min = vim.diagnostic.severity.WARN },
@@ -235,7 +241,7 @@ keymap('n', '<leader>ud', function()
     },
   }
 end)
-keymap('n', '<leader>uh', function()
+keymap('n', '<leader>yh', function()
   vim.diagnostic.config {
     virtual_text = {
       severity = { min = vim.diagnostic.severity.HINT },
@@ -287,7 +293,7 @@ vim.opt.rtp:prepend(lazypath)
 
 require('lazy').setup({
 
-  'tpope/vim-sleuth',
+  -- 'tpope/vim-sleuth',
   'tpope/vim-repeat',
 
   { 'junegunn/fzf', build = './install --bin' },
@@ -836,13 +842,13 @@ require('lazy').setup({
       -- - sr)'  - [S]urround [R]eplace [)] [']
       require('mini.surround').setup {
         mappings = {
-          add = '<leader>ra',
-          delete = '<leader>rd',
-          find = '<leader>rf',
-          find_left = '<leader>rF',
-          highlight = '<leader>rh',
-          replace = '<leader>rr',
-          update_n_lines = '<leader>rn',
+          add = '<leader>xa',
+          delete = '<leader>xx',
+          find = '<leader>xf',
+          find_left = '<leader>xF',
+          highlight = '<leader>xh',
+          replace = '<leader>xr',
+          update_n_lines = '<leader>xn',
 
           suffix_last = 'l',
           suffix_next = 'n',

@@ -3,7 +3,7 @@ return {
   dependencies = 'nvim-lua/plenary.nvim',
   config = true,
   keys = { -- load the plugin only when using it's keybinding:
-    { '<leader>ue', "<cmd>lua require('undotree').toggle()<cr>" },
+    { '<leader>ye', "<cmd>lua require('undotree').toggle()<cr>" },
   },
   opts = {
     float_diff = true, -- using float window previews diff, set this `true` will disable layout option
