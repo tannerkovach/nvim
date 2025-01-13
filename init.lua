@@ -94,8 +94,15 @@ keymap('n', '<leader>fp', ':bprev<CR>', { desc = 'Prev Buffer' })
 keymap('n', '<leader>fx', ':bdelete<CR>', { desc = 'Delete Buffer' })
 
 -- Terminal Buffers
-keymap('n', '<C-t>', '<cmd>BufTermNext<CR>', { desc = 'Next Terminal Buffer' })
+keymap('t', '<C-S-t>', function()
+  vim.cmd 'terminal'
+  vim.cmd 'startinsert'
+end, { desc = 'New Terminal' })
+
 keymap('t', '<C-t>', '<cmd>BufTermNext<CR>', { desc = 'Next Terminal Buffer' })
+keymap('t', '<C-p>', '<cmd>BufTermPrev<CR>', { desc = 'Next Terminal Buffer' })
+keymap('n', '<C-t>', '<cmd>BufTermNext<CR>', { desc = 'Next Terminal Buffer' })
+keymap('n', '<C-p>', '<cmd>BufTermPrev<CR>', { desc = 'Next Terminal Buffer' })
 keymap('n', '<leader>mn', '<cmd>BufTermNext<CR>', { desc = 'Next Terminal Buffer' })
 keymap('n', '<leader>mp', '<cmd>BufTermPrev<CR>', { desc = 'Prev Terminal Buffer' })
 keymap('n', '<leader>mt', '<cmd>BufTermEnter<CR>', { desc = 'Open Terminal Buffer' })
@@ -152,6 +159,15 @@ local function toggle_mini_term()
     vim.api.nvim_win_set_height(0, 15)
     mini_term.buf = vim.api.nvim_get_current_buf()
     mini_term.win = vim.api.nvim_get_current_win()
+
+    -- Create autocommand for this specific buffer
+    vim.api.nvim_create_autocmd('BufEnter', {
+      buffer = mini_term.buf,
+      callback = function()
+        vim.cmd.startinsert()
+      end,
+    })
+
     vim.cmd.startinsert()
   elseif mini_term.win and vim.api.nvim_win_is_valid(mini_term.win) then
     -- Hide terminal window
@@ -163,6 +179,7 @@ local function toggle_mini_term()
     vim.api.nvim_win_set_height(0, 15)
     vim.api.nvim_win_set_buf(0, mini_term.buf)
     mini_term.win = vim.api.nvim_get_current_win()
+    vim.cmd.startinsert()
   end
 end
 
@@ -806,19 +823,15 @@ require('lazy').setup({
   },
 
   {
-    'folke/tokyonight.nvim',
+    'Mofiqul/vscode.nvim',
+    name = 'vscode',
     priority = 1000, -- Make sure to load this before all the other start plugins.
     init = function()
-      vim.cmd.colorscheme 'tokyonight-night'
-      vim.cmd.hi 'Comment gui=none'
-      vim.cmd.hi 'TabLineFill guibg=#1a1b26'
-      vim.cmd.hi 'FloatBorder guifg=#565f89'
+      vim.cmd 'colorscheme vscode'
+      -- vim.cmd.hi 'Comment gui=none'
+      -- vim.cmd.hi 'TabLineFill guibg=#1a1b26'
+      -- vim.cmd.hi 'FloatBorder guifg=#565f89'
     end,
-    opts = {
-      on_colors = function(colors)
-        colors.border = '#565f89'
-      end,
-    },
   },
 
   -- Highlight todo, notes, etc in comments
