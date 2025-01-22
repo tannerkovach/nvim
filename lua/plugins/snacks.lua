@@ -4,10 +4,9 @@ return {
   lazy = false,
   opts = {
     bigfile = { enabled = true },
-    dashboard = { example = 'compact_files' },
     notifier = {
       enabled = true,
-      timeout = 3000,
+      timeout = 3500,
     },
     quickfile = { enabled = true },
     -- statuscolumn = {
@@ -24,52 +23,21 @@ return {
     --   },
     --   refresh = 50, -- refresh at most every 50ms
     -- },
-    toggle = {
-      map = vim.keymap.set, -- keymap.set function to use
-      which_key = false, -- integrate with which-key to show enabled/disabled icons and colors
-      notify = true, -- show a notification when toggling
-      -- icons for enabled/disabled states
-      icon = {
-        enabled = ' ',
-        disabled = ' ',
-      },
-      -- colors for enabled/disabled states
-      color = {
-        enabled = 'green',
-        disabled = 'yellow',
-      },
-    },
-    terminal = {
-      win = {
-        style = 'float',
-        width = 0.8, -- 80% of screen width
-        height = 0.8, -- 80% of screen height
-        border = 'rounded',
-        title = ' Terminal ',
-      },
-    },
     words = { enabled = true },
     styles = {
       notification = {
         wo = { wrap = true }, -- Wrap notifications
       },
     },
-    scroll = { enabled = true },
+    scroll = { enabled = false },
     indent = { enabled = true },
-    animate = {
-      duration = 20, -- ms per step
-      easing = 'linear',
-      fps = 60, -- frames per second. Global setting for all animations
-    },
+    -- animate = {
+    --   duration = 20, -- ms per step
+    --   easing = 'linear',
+    --   fps = 60, -- frames per second. Global setting for all animations
+    -- },
   },
   keys = {
-    {
-      '<leader>zn',
-      function()
-        Snacks.zen()
-      end,
-      desc = 'Toggle Zen Mode',
-    },
     {
       '<leader>Z',
       function()
@@ -78,26 +46,26 @@ return {
       desc = 'Toggle Zoom',
     },
     {
-      '<leader>/',
+      '<leader>sb',
       function()
         Snacks.scratch()
       end,
       desc = 'Toggle Scratch Buffer',
     },
     {
-      '<leader>S',
+      '<leader>sB',
       function()
         Snacks.scratch.select()
       end,
       desc = 'Select Scratch Buffer',
     },
-    -- {
-    --   '<leader>nh',
-    --   function()
-    --     Snacks.notifier.show_history()
-    --   end,
-    --   desc = 'Notification History',
-    -- },
+    {
+      '<leader>ynh',
+      function()
+        Snacks.notifier.show_history()
+      end,
+      desc = 'Notification History',
+    },
     -- { "<leader>bd", function() Snacks.bufdelete() end, desc = "Delete Buffer" },
     {
       '<leader>cR',
@@ -114,13 +82,6 @@ return {
       desc = 'Git Browse',
     },
     {
-      '<leader>gg',
-      function()
-        Snacks.lazygit()
-      end,
-      desc = 'Lazygit',
-    },
-    {
       '<leader>gb',
       function()
         Snacks.git.blame_line()
@@ -133,61 +94,6 @@ return {
         Snacks.notifier.hide()
       end,
       desc = 'Dismiss All Notifications',
-    },
-    -- {
-    --   '<C-/>',
-    --   function()
-    --     Snacks.terminal.toggle()
-    --   end,
-    --   desc = 'Toggle Terminal',
-    -- },
-    -- {
-    --   '<c-_>',
-    --   function()
-    --     Snacks.terminal()
-    --   end,
-    --   desc = 'which_key_ignore',
-    -- },
-    {
-      ']]',
-      function()
-        Snacks.words.jump(vim.v.count1)
-      end,
-      desc = 'Next Reference',
-      mode = { 'n', 't' },
-    },
-    {
-      '[[',
-      function()
-        Snacks.words.jump(-vim.v.count1)
-      end,
-      desc = 'Prev Reference',
-      mode = { 'n', 't' },
-    },
-    {
-      '<leader>N',
-      desc = 'Neovim News',
-      function()
-        Snacks.win {
-          file = vim.api.nvim_get_runtime_file('doc/news.txt', false)[1],
-          width = 0.6,
-          height = 0.6,
-          wo = {
-            spell = false,
-            wrap = false,
-            signcolumn = 'yes',
-            statuscolumn = ' ',
-            conceallevel = 3,
-          },
-        }
-      end,
-    },
-    {
-      '<leader>T',
-      desc = 'Toggle',
-      function()
-        Snacks.toggle()
-      end,
     },
   },
   init = function()
@@ -207,10 +113,6 @@ return {
         Snacks.toggle.option('spell', { name = 'Spelling' }):map '<leader>ys'
         Snacks.toggle.option('wrap', { name = 'Wrap' }):map '<leader>yw'
         Snacks.toggle.option('relativenumber', { name = 'Relative Number' }):map '<leader>yl'
-        -- Snacks.toggle.diagnostics():map '<leader>ud'
-        -- Snacks.toggle.line_number():map '<leader>ul'
-        -- Snacks.toggle.option('conceallevel', { off = 0, on = vim.o.conceallevel > 0 and vim.o.conceallevel or 2 }):map '<leader>uc'
-        -- Snacks.toggle.treesitter():map '<leader>uT'
         Snacks.toggle.option('background', { off = 'light', on = 'dark', name = 'Dark Background' }):map '<leader>yb'
         Snacks.toggle.inlay_hints():map '<leader>yi'
       end,

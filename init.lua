@@ -44,24 +44,27 @@ vim.opt.sidescroll = 1
 vim.o.cmdheight = 0
 vim.o.splitbelow = true
 vim.o.splitright = true
+vim.o.conceallevel = 0
 
 -- ╭──────────────────────────────────────────────────────────╮
 -- │                     Keymaps Options                      │
 -- ╰──────────────────────────────────────────────────────────╯
 
 local keymap = vim.keymap.set
-local virtual_text_enabled = true
 
 -- NOTE: General Keymaps
+
+keymap('n', '<C-b>', '<C-^>', { desc = 'Alternate Buffer' })
+keymap('n', '<Esc>', '<cmd>nohlsearch<CR>')
+keymap('x', 'y', 'mmy`m')
 keymap('n', '<C-CR>', 'm`o<Esc>``')
 keymap('n', '<M-CR>', 'm`O<Esc>``')
 keymap('n', '<CR>', 'o<ESC>')
 keymap('n', '<S-CR>', 'O<ESC>')
-keymap('n', '<Esc>', '<cmd>nohlsearch<CR>')
-keymap('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
 keymap('x', 'p', 'P', { silent = true })
 keymap('n', 'R', '<C-r>')
 keymap('t', '<Esc><Esc>', '<C-\\><C-n>', { noremap = true, silent = true })
+keymap('t', '<C-n>', '<C-\\><C-n>', { noremap = true, silent = true })
 keymap('n', 'FF', ':w<CR>', { noremap = true, silent = true })
 keymap('n', 'YY', ':%y<CR>', { noremap = true, silent = true })
 keymap('n', 'QQ', function()
@@ -82,10 +85,10 @@ keymap('n', '<leader>to', '<cmd>tabnew<CR>', { desc = 'Open new tab' })
 keymap('n', '<leader>tx', '<cmd>tabclose<CR>', { desc = 'Close current tab' })
 keymap('n', '<leader>tn', '<cmd>tabn<CR>', { desc = 'Go to next tab' })
 keymap('n', '<leader>tp', '<cmd>tabp<CR>', { desc = 'Go to previous tab' })
-keymap('n', '<C-b>', '<cmd>tabn<CR>', { desc = 'Go to next tab' }) -- alternative keybind for use with terminal safe counterpart
-keymap('n', '<C-p>', '<cmd>tabp<CR>', { desc = 'Go to previous tab' }) -- alternative keybind for use with terminal safe counterpart
-keymap('t', '<C-b>', '<cmd>tabn<CR>', { desc = 'Go to next tab' })
-keymap('t', '<C-p>', '<cmd>tabp<CR>', { desc = 'Go to previous tab' })
+keymap('n', '<M-b>', '<cmd>tabn<CR>', { desc = 'Go to next tab' })
+keymap('n', '<C-e>', '<cmd>tabp<CR>', { desc = 'Go to previous tab' })
+keymap('t', '<M-b>', '<cmd>tabn<CR>', { desc = 'Go to next tab' })
+keymap('t', '<C-e>', '<cmd>tabp<CR>', { desc = 'Go to previous tab' })
 keymap('n', '<leader>tf', '<cmd>tabnew %<CR>', { desc = 'Open current buffer in new tab' })
 
 -- Buffers
@@ -103,20 +106,6 @@ keymap('t', '<C-t>', '<cmd>BufTermNext<CR>', { desc = 'Next Terminal Buffer' })
 keymap('t', '<C-p>', '<cmd>BufTermPrev<CR>', { desc = 'Next Terminal Buffer' })
 keymap('n', '<C-t>', '<cmd>BufTermNext<CR>', { desc = 'Next Terminal Buffer' })
 keymap('n', '<C-p>', '<cmd>BufTermPrev<CR>', { desc = 'Next Terminal Buffer' })
-keymap('n', '<leader>mn', '<cmd>BufTermNext<CR>', { desc = 'Next Terminal Buffer' })
-keymap('n', '<leader>mp', '<cmd>BufTermPrev<CR>', { desc = 'Prev Terminal Buffer' })
-keymap('n', '<leader>mt', '<cmd>BufTermEnter<CR>', { desc = 'Open Terminal Buffer' })
-keymap('n', '<leader>mx', '<cmd>bdelete!<CR>', { desc = 'Close Terminal Buffer' })
-keymap('n', '<leader>mv', function()
-  vim.cmd 'vsplit'
-  vim.cmd 'wincmd l'
-  vim.cmd 'terminal'
-end, { desc = 'Split + Terminal' })
-keymap('n', '<leader>mz', function()
-  vim.cmd 'split'
-  vim.cmd 'wincmd j'
-  vim.cmd 'terminal'
-end, { desc = 'Split Horizontal + Terminal' })
 
 keymap('t', '<C-Left>', function()
   vim.cmd.wincmd 'h'
@@ -156,7 +145,7 @@ local function toggle_mini_term()
     -- Create new terminal
     vim.cmd.new()
     vim.cmd.term()
-    vim.api.nvim_win_set_height(0, 15)
+    vim.api.nvim_win_set_height(0, 20)
     mini_term.buf = vim.api.nvim_get_current_buf()
     mini_term.win = vim.api.nvim_get_current_win()
 
@@ -218,8 +207,6 @@ keymap('v', 'ga', '<cmd>CodeCompanionChat Add<cr>', { noremap = true, silent = t
 
 vim.cmd [[cab cc CodeCompanion]]
 
--- Obsidian
-keymap('n', '<leader>xn', ':ObsidianNew<CR>')
 keymap('n', '<leader>.', function()
   local neogit_win = nil
   for _, win in ipairs(vim.api.nvim_list_wins()) do
@@ -400,17 +387,6 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
       vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
 
-      -- Slightly advanced example of overriding default behavior and theme
-      -- vim.keymap.set('n', '<leader>/', function()
-      --   -- You can pass additional configuration to Telescope to change the theme, layout, etc.
-      --   builtin.current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
-      --     winblend = 10,
-      --     previewer = false,
-      --   })
-      -- end, { desc = '[/] Fuzzily search in current buffer' })
-
-      -- It's also possible to pass additional configuration options.
-      --  See `:help telescope.builtin.live_grep()` for information about particular keys
       vim.keymap.set('n', '<leader>s/', function()
         builtin.live_grep {
           grep_open_files = true,
@@ -457,35 +433,6 @@ require('lazy').setup({
       'hrsh7th/cmp-nvim-lsp',
     },
     config = function()
-      -- Brief aside: **What is LSP?**
-      --
-      -- LSP is an initialism you've probably heard, but might not understand what it is.
-      --
-      -- LSP stands for Language Server Protocol. It's a protocol that helps editors
-      -- and language tooling communicate in a standardized fashion.
-      --
-      -- In general, you have a "server" which is some tool built to understand a particular
-      -- language (such as `gopls`, `lua_ls`, `rust_analyzer`, etc.). These Language Servers
-      -- (sometimes called LSP servers, but that's kind of like ATM Machine) are standalone
-      -- processes that communicate with some "client" - in this case, Neovim!
-      --
-      -- LSP provides Neovim with features like:
-      --  - Go to definition
-      --  - Find references
-      --  - Autocompletion
-      --  - Symbol Search
-      --  - and more!
-      --
-      -- Thus, Language Servers are external tools that must be installed separately from
-      -- Neovim. This is where `mason` and related plugins come into play.
-      --
-      -- If you're wondering about lsp vs treesitter, you can check out the wonderfully
-      -- and elegantly composed help section, `:help lsp-vs-treesitter`
-
-      --  This function gets run when an LSP attaches to a particular buffer.
-      --    That is to say, every time a new file is opened that is associated with
-      --    an lsp (for example, opening `main.rs` is associated with `rust_analyzer`) this
-      --    function will be executed to configure the current buffer
       vim.api.nvim_create_autocmd('LspAttach', {
         group = vim.api.nvim_create_augroup('kickstart-lsp-attach', { clear = true }),
         callback = function(event)
@@ -567,16 +514,6 @@ require('lazy').setup({
               end,
             })
           end
-
-          -- The following code creates a keymap to toggle inlay hints in your
-          -- code, if the language server you are using supports them
-          --
-          -- This may be unwanted, since they displace some of your code
-          -- if client and client.supports_method(vim.lsp.protocol.Methods.textDocument_inlayHint) then
-          --   map('<leader>dh', function()
-          --     vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled { bufnr = event.buf })
-          --   end, '[T]oggle Inlay [H]ints')
-          -- end
         end,
       })
 
@@ -590,36 +527,10 @@ require('lazy').setup({
         vim.diagnostic.config { signs = { text = diagnostic_signs } }
       end
 
-      -- LSP servers and clients are able to communicate to each other what features they support.
-      --  By default, Neovim doesn't support everything that is in the LSP specification.
-      --  When you add nvim-cmp, luasnip, etc. Neovim now has *more* capabilities.
-      --  So, we create new capabilities with nvim cmp, and then broadcast that to the servers.
       local capabilities = vim.lsp.protocol.make_client_capabilities()
       capabilities = vim.tbl_deep_extend('force', capabilities, require('cmp_nvim_lsp').default_capabilities())
 
-      -- Enable the following language servers
-      --  Feel free to add/remove any LSPs that you want here. They will automatically be installed.
-      --
-      --  Add any additional override configuration in the following tables. Available keys are:
-      --  - cmd (table): Override the default command used to start the server
-      --  - filetypes (table): Override the default list of associated filetypes for the server
-      --  - capabilities (table): Override fields in capabilities. Can be used to disable certain LSP features.
-      --  - settings (table): Override the default settings passed when initializing the server.
-      --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
       local servers = {
-        -- clangd = {},
-        -- gopls = {},
-        -- pyright = {},
-        -- rust_analyzer = {},
-        -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
-        --
-        -- Some languages (like typescript) have entire language plugins that can be useful:
-        --    https://github.com/pmizio/typescript-tools.nvim
-        --
-        -- But for many setups, the LSP (`ts_ls`) will work just fine
-        -- ts_ls = {},
-        --
-
         lua_ls = {
           -- cmd = {...},
           -- filetypes = { ...},
@@ -656,9 +567,6 @@ require('lazy').setup({
         handlers = {
           function(server_name)
             local server = servers[server_name] or {}
-            -- This handles overriding only values explicitly passed
-            -- by the server configuration above. Useful when disabling
-            -- certain features of an LSP (for example, turning off formatting for ts_ls)
             server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
             require('lspconfig')[server_name].setup(server)
           end,
@@ -701,11 +609,13 @@ require('lazy').setup({
       end,
       formatters_by_ft = {
         lua = { 'stylua' },
-        -- javascript = { "prettierd", "prettier", stop_after_first = true },
+        javascript = { 'prettier' },
+        liquid = { 'prettier' },
+        html = { 'prettier' },
       },
     },
   },
-
+  --
   { -- Autocompletion
     'hrsh7th/nvim-cmp',
     event = 'InsertEnter',
@@ -825,12 +735,9 @@ require('lazy').setup({
   {
     'Mofiqul/vscode.nvim',
     name = 'vscode',
-    priority = 1000, -- Make sure to load this before all the other start plugins.
+    priority = 1000,
     init = function()
       vim.cmd 'colorscheme vscode'
-      -- vim.cmd.hi 'Comment gui=none'
-      -- vim.cmd.hi 'TabLineFill guibg=#1a1b26'
-      -- vim.cmd.hi 'FloatBorder guifg=#565f89'
     end,
   },
 
@@ -947,24 +854,6 @@ require('lazy').setup({
           wrap_goto = false,
         },
       }
-
-      -- -- Simple and easy statusline.
-      -- --  You could remove this setup call if you don't like it,
-      -- --  and try some other statusline plugin
-      -- local statusline = require 'mini.statusline'
-      -- -- set use_icons to true if you have a Nerd Font
-      -- statusline.setup { use_icons = vim.g.have_nerd_font }
-      --
-      -- -- You can configure sections in the statusline by overriding their
-      -- -- default behavior. For example, here we set the section for
-      -- -- cursor location to LINE:COLUMN
-      -- ---@diagnostic disable-next-line: duplicate-set-field
-      -- statusline.section_location = function()
-      --   return '%2l:%-2v'
-      -- end
-
-      -- ... and there is more!
-      --  Check out: https://github.com/echasnovski/mini.nvim
     end,
   },
   { -- Highlight, edit, and navigate code

@@ -18,6 +18,15 @@ return {
       support_paste_from_clipboard = true,
       minimize_diff = true, -- Whether to remove unchanged lines when applying a code block
     }, -- add any opts here
+    mappings = {
+      --- @class AvanteConflictMappings
+      suggestion = {
+        accept = '<Tab>',
+        next = '<M-]>',
+        prev = '<M-[>',
+        dismiss = '<C-]>',
+      },
+    },
   },
   -- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
   build = 'make',
