@@ -133,53 +133,111 @@ keymap('n', '<C-Up>', function()
   vim.cmd.wincmd 'k'
 end, { noremap = true, silent = true })
 
--- -- NOTE: Mini Terminal
+-- -- NOTE: Terminal Management
 
-local mini_term = {
-  buf = nil,
-  win = nil,
-}
+local function is_term_buffer(bufnr)
+  return vim.bo[bufnr].buftype == 'terminal'
+end
 
-local function toggle_mini_term()
-  if mini_term.buf == nil then
-    -- Create new terminal
-    vim.cmd.new()
-    vim.cmd.term()
-    vim.api.nvim_win_set_height(0, 20)
-    mini_term.buf = vim.api.nvim_get_current_buf()
-    mini_term.win = vim.api.nvim_get_current_win()
+local function get_term_buffers()
+  local term_bufs = {}
+  for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+    if is_term_buffer(buf) then
+      table.insert(term_bufs, buf)
+    end
+  end
+  return term_bufs
+end
 
-    -- Create autocommand for this specific buffer
-    vim.api.nvim_create_autocmd('BufEnter', {
-      buffer = mini_term.buf,
-      callback = function()
-        vim.cmd.startinsert()
-      end,
-    })
+local function find_term_window()
+  for _, win in ipairs(vim.api.nvim_list_wins()) do
+    local buf = vim.api.nvim_win_get_buf(win)
+    if is_term_buffer(buf) then
+      return win
+    end
+  end
+  return nil
+end
 
-    vim.cmd.startinsert()
-  elseif mini_term.win and vim.api.nvim_win_is_valid(mini_term.win) then
-    -- Hide terminal window
-    vim.api.nvim_win_hide(mini_term.win)
-    mini_term.win = nil
+local function delete_current_term()
+  local current_buf = vim.api.nvim_get_current_buf()
+
+  -- Only proceed if this is actually a terminal buffer
+  if not is_term_buffer(current_buf) then
+    return
+  end
+
+  -- Get all terminal buffers
+  local term_bufs = get_term_buffers()
+
+  -- Remove current buffer from the list
+  for i, buf in ipairs(term_bufs) do
+    if buf == current_buf then
+      table.remove(term_bufs, i)
+      break
+    end
+  end
+
+  -- If there are other terminal buffers, switch to the next one before deleting
+  if #term_bufs > 0 then
+    -- Get all windows showing the current buffer
+    local windows = vim.fn.win_findbuf(current_buf)
+
+    -- Switch each window to the next terminal buffer
+    for _, win in ipairs(windows) do
+      if vim.api.nvim_win_is_valid(win) then
+        vim.api.nvim_win_set_buf(win, term_bufs[1])
+      end
+    end
+  end
+
+  -- Delete the current buffer
+  vim.api.nvim_buf_delete(current_buf, { force = true })
+end
+
+local function create_term()
+  vim.cmd.new()
+  vim.cmd.term()
+  vim.api.nvim_win_set_height(0, 15)
+  vim.cmd.startinsert()
+
+  -- Create autocommand for this specific buffer
+  local bufnr = vim.api.nvim_get_current_buf()
+  vim.api.nvim_create_autocmd('BufEnter', {
+    buffer = bufnr,
+    callback = function()
+      vim.cmd.startinsert()
+    end,
+  })
+end
+
+local function toggle_term()
+  local term_win = find_term_window()
+  local term_bufs = get_term_buffers()
+
+  if term_win then
+    -- Terminal window exists, hide it
+    pcall(vim.api.nvim_win_close, term_win, true)
   else
-    -- Show terminal window
-    vim.cmd.split()
-    vim.api.nvim_win_set_height(0, 15)
-    vim.api.nvim_win_set_buf(0, mini_term.buf)
-    mini_term.win = vim.api.nvim_get_current_win()
-    vim.cmd.startinsert()
+    -- No terminal window visible
+    if #term_bufs > 0 then
+      -- Reuse existing terminal buffer
+      vim.cmd.new()
+      vim.api.nvim_win_set_height(0, 15)
+      vim.api.nvim_win_set_buf(0, term_bufs[1])
+      vim.cmd.startinsert()
+    else
+      -- Create new terminal if none exist
+      create_term()
+    end
   end
 end
 
-keymap('n', '<C-/>', toggle_mini_term)
-keymap('t', '<C-/>', function()
-  -- Hide windows directly from terminal mode
-  if mini_term.win and vim.api.nvim_win_is_valid(mini_term.win) then
-    vim.api.nvim_win_hide(mini_term.win)
-    mini_term.wins = { nil, nil }
-  end
-end)
+-- Map keys for terminal management
+keymap('t', '<C-d>', delete_current_term, { noremap = true, silent = true })
+keymap('n', '<C-S-t>', create_term, { noremap = true, silent = true })
+keymap('n', '<C-/>', toggle_term, { noremap = true, silent = true })
+keymap('t', '<C-/>', toggle_term, { noremap = true, silent = true })
 
 -- NOTE: Formatting
 
@@ -188,6 +246,8 @@ keymap('n', '<leader>ff', function()
 end, { desc = 'Format buffer' })
 
 -- NOTE: Plugin Keymaps
+
+keymap('n', '<leader>ta', '<cmd>AvanteToggle<CR>', { desc = 'Toggle Oil.nvim' })
 
 -- Oil.nvim
 keymap('n', '-', '<cmd>Oil<CR>', { desc = 'Toggle Oil.nvim' })
@@ -609,8 +669,8 @@ require('lazy').setup({
       end,
       formatters_by_ft = {
         lua = { 'stylua' },
-        javascript = { 'prettier' },
-        liquid = { 'prettier' },
+        -- javascript = { 'prettier' },
+        -- liquid = { 'prettier' },
         html = { 'prettier' },
       },
     },
