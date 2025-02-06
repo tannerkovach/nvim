@@ -37,7 +37,34 @@ vim.opt.expandtab = true
 vim.opt.inccommand = 'split'
 vim.opt.cursorline = true
 vim.o.scrolloff = 5
-vim.opt.laststatus = 3
+-- Create an autocommand group
+vim.api.nvim_create_augroup('StatusLineLayout', { clear = true })
+
+-- Function to check window layout and set laststatus
+vim.api.nvim_create_autocmd({ 'WinNew', 'WinClosed', 'VimEnter' }, {
+  group = 'StatusLineLayout',
+  callback = function()
+    local wins = vim.api.nvim_tabpage_list_wins(0)
+    local is_vertical = false
+
+    -- Check if any windows are in a vertical split
+    for i = 1, #wins - 1 do
+      local win1_pos = vim.api.nvim_win_get_position(wins[i])
+      local win2_pos = vim.api.nvim_win_get_position(wins[i + 1])
+      if win1_pos[2] ~= win2_pos[2] then
+        is_vertical = true
+        break
+      end
+    end
+
+    -- Set laststatus based on layout
+    if is_vertical then
+      vim.opt.laststatus = 2 -- Global statusline for vertical splits
+    else
+      vim.opt.laststatus = 3 -- Separate statuslines for horizontal splits
+    end
+  end,
+})
 vim.opt.wrap = false
 vim.opt.linebreak = false
 vim.opt.sidescroll = 1
@@ -45,6 +72,7 @@ vim.o.cmdheight = 0
 vim.o.splitbelow = true
 vim.o.splitright = true
 vim.o.conceallevel = 0
+vim.o.background = 'light'
 
 -- ╭──────────────────────────────────────────────────────────╮
 -- │                     Keymaps Options                      │
@@ -210,6 +238,14 @@ local function create_term()
     end,
   })
 end
+
+-- -- autocmd for after colorscheme is loaded
+-- vim.api.nvim_create_autocmd('ColorScheme', {
+--   pattern = '*',
+--   callback = function()
+--     vim.cmd 'colorscheme deafault'
+--   end,
+-- })
 
 local function toggle_term()
   local term_win = find_term_window()
@@ -792,14 +828,14 @@ require('lazy').setup({
     end,
   },
 
-  {
-    'Mofiqul/vscode.nvim',
-    name = 'vscode',
-    priority = 1000,
-    init = function()
-      vim.cmd 'colorscheme vscode'
-    end,
-  },
+  -- {
+  --   'Mofiqul/vscode.nvim',
+  --   name = 'vscode',
+  --   priority = 1000,
+  --   init = function()
+  --     vim.cmd 'colorscheme vscode'
+  --   end,
+  -- },
 
   -- Highlight todo, notes, etc in comments
   { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
@@ -912,6 +948,25 @@ require('lazy').setup({
 
           -- Whether to wrap around edges during hunk navigation
           wrap_goto = false,
+        },
+      }
+      require('mini.statusline').setup {
+        content = {
+          active = function()
+            local mode, mode_hl = MiniStatusline.section_mode { trunc_width = 120 }
+            local filename = MiniStatusline.section_filename { trunc_width = 140 }
+            local fileinfo = MiniStatusline.section_fileinfo { trunc_width = 120 }
+            local location = MiniStatusline.section_location { trunc_width = 120 }
+
+            return MiniStatusline.combine_groups {
+              { hl = mode_hl, strings = { mode } },
+              { hl = 'MiniStatuslineDevinfo', strings = { filename } },
+              '%<', -- Mark general truncate point
+              '%=', -- End left alignment
+              { hl = 'MiniStatuslineFileinfo', strings = { fileinfo } },
+              { hl = 'MiniStatuslineLocation', strings = { location } },
+            }
+          end,
         },
       }
     end,

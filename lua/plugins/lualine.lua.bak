@@ -5,12 +5,12 @@ return {
   config = function()
     -- local harpoon_files = require 'harpoon_files'
     require('lualine').setup {
+      options = {
+        icons_enabled = true,
+        theme = 'seoul256',
+      },
       sections = {
         lualine_c = {
-          {
-            'filename',
-            path = 1,
-          },
           -- { harpoon_files.lualine_component },
           -- {
           --   require("noice").api.status.message.get_hl,
