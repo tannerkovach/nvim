@@ -1,21 +1,6 @@
---  ███╗   ██╗███████╗ ██████╗ ██╗   ██╗██╗███╗   ███╗
---  ████╗  ██║██╔════╝██╔═══██╗██║   ██║██║████╗ ████║
---  ██╔██╗ ██║█████╗  ██║   ██║██║   ██║██║██╔████╔██║
---  ██║╚██╗██║██╔══╝  ██║   ██║╚██╗ ██╔╝██║██║╚██╔╝██║
---  ██║ ╚████║███████╗╚██████╔╝ ╚████╔╝ ██║██║ ╚═╝ ██║
---  ╚═╝  ╚═══╝╚══════╝ ╚═════╝   ╚═══╝  ╚═╝╚═╝     ╚═╝
-
--- ╭──────────────────────────────────────────────────────────╮
--- │                     Global Options                       │
--- ╰──────────────────────────────────────────────────────────╯
-
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 vim.g.have_nerd_font = true
-
--- ╭──────────────────────────────────────────────────────────╮
--- │                     Local Options                        │
--- ╰──────────────────────────────────────────────────────────╯
 
 vim.opt.number = true
 vim.opt.relativenumber = true
@@ -37,34 +22,7 @@ vim.opt.expandtab = true
 vim.opt.inccommand = 'split'
 vim.opt.cursorline = true
 vim.o.scrolloff = 5
--- Create an autocommand group
-vim.api.nvim_create_augroup('StatusLineLayout', { clear = true })
-
--- Function to check window layout and set laststatus
-vim.api.nvim_create_autocmd({ 'WinNew', 'WinClosed', 'VimEnter' }, {
-  group = 'StatusLineLayout',
-  callback = function()
-    local wins = vim.api.nvim_tabpage_list_wins(0)
-    local is_vertical = false
-
-    -- Check if any windows are in a vertical split
-    for i = 1, #wins - 1 do
-      local win1_pos = vim.api.nvim_win_get_position(wins[i])
-      local win2_pos = vim.api.nvim_win_get_position(wins[i + 1])
-      if win1_pos[2] ~= win2_pos[2] then
-        is_vertical = true
-        break
-      end
-    end
-
-    -- Set laststatus based on layout
-    if is_vertical then
-      vim.opt.laststatus = 2 -- Global statusline for vertical splits
-    else
-      vim.opt.laststatus = 3 -- Separate statuslines for horizontal splits
-    end
-  end,
-})
+vim.o.laststatus = 3
 vim.opt.wrap = false
 vim.opt.linebreak = false
 vim.opt.sidescroll = 1
@@ -72,21 +30,12 @@ vim.o.cmdheight = 0
 vim.o.splitbelow = true
 vim.o.splitright = true
 vim.o.conceallevel = 0
-vim.o.background = 'light'
-
--- ╭──────────────────────────────────────────────────────────╮
--- │                     Keymaps Options                      │
--- ╰──────────────────────────────────────────────────────────╯
 
 local keymap = vim.keymap.set
-
--- NOTE: General Keymaps
 
 keymap('n', '<C-b>', '<C-^>', { desc = 'Alternate Buffer' })
 keymap('n', '<Esc>', '<cmd>nohlsearch<CR>')
 keymap('x', 'y', 'mmy`m')
-keymap('n', '<C-CR>', 'm`o<Esc>``')
-keymap('n', '<M-CR>', 'm`O<Esc>``')
 keymap('n', '<CR>', 'o<ESC>')
 keymap('n', '<S-CR>', 'O<ESC>')
 keymap('x', 'p', 'P', { silent = true })
@@ -100,8 +49,6 @@ keymap('n', 'QQ', function()
   vim.cmd 'qa!'
 end, { silent = true })
 
--- NOTE: Window Management
-
 -- Splits
 keymap('n', '<leader>sv', '<C-w>v', { desc = 'Split window vertically' })
 keymap('n', '<leader>sz', '<C-w>s', { desc = 'Split window horizontally' })
@@ -113,11 +60,9 @@ keymap('n', '<leader>to', '<cmd>tabnew<CR>', { desc = 'Open new tab' })
 keymap('n', '<leader>tx', '<cmd>tabclose<CR>', { desc = 'Close current tab' })
 keymap('n', '<leader>tn', '<cmd>tabn<CR>', { desc = 'Go to next tab' })
 keymap('n', '<leader>tp', '<cmd>tabp<CR>', { desc = 'Go to previous tab' })
-keymap('n', '<M-b>', '<cmd>tabn<CR>', { desc = 'Go to next tab' })
-keymap('n', '<C-e>', '<cmd>tabp<CR>', { desc = 'Go to previous tab' })
-keymap('t', '<M-b>', '<cmd>tabn<CR>', { desc = 'Go to next tab' })
-keymap('t', '<C-e>', '<cmd>tabp<CR>', { desc = 'Go to previous tab' })
 keymap('n', '<leader>tf', '<cmd>tabnew %<CR>', { desc = 'Open current buffer in new tab' })
+keymap('n', '<M-p>', '<cmd>tabn<CR>', { desc = 'Go to next tab' })
+keymap('n', '<M-e>', '<cmd>tabp<CR>', { desc = 'Go to previous tab' })
 
 -- Buffers
 keymap('n', '<leader>fn', ':bnext<CR>', { desc = 'Next Buffer' })
@@ -161,8 +106,6 @@ keymap('n', '<C-Up>', function()
   vim.cmd.wincmd 'k'
 end, { noremap = true, silent = true })
 
--- -- NOTE: Terminal Management
-
 local function is_term_buffer(bufnr)
   return vim.bo[bufnr].buftype == 'terminal'
 end
@@ -190,15 +133,12 @@ end
 local function delete_current_term()
   local current_buf = vim.api.nvim_get_current_buf()
 
-  -- Only proceed if this is actually a terminal buffer
   if not is_term_buffer(current_buf) then
     return
   end
 
-  -- Get all terminal buffers
   local term_bufs = get_term_buffers()
 
-  -- Remove current buffer from the list
   for i, buf in ipairs(term_bufs) do
     if buf == current_buf then
       table.remove(term_bufs, i)
@@ -206,12 +146,9 @@ local function delete_current_term()
     end
   end
 
-  -- If there are other terminal buffers, switch to the next one before deleting
   if #term_bufs > 0 then
-    -- Get all windows showing the current buffer
     local windows = vim.fn.win_findbuf(current_buf)
 
-    -- Switch each window to the next terminal buffer
     for _, win in ipairs(windows) do
       if vim.api.nvim_win_is_valid(win) then
         vim.api.nvim_win_set_buf(win, term_bufs[1])
@@ -219,7 +156,6 @@ local function delete_current_term()
     end
   end
 
-  -- Delete the current buffer
   vim.api.nvim_buf_delete(current_buf, { force = true })
 end
 
@@ -238,14 +174,6 @@ local function create_term()
     end,
   })
 end
-
--- -- autocmd for after colorscheme is loaded
--- vim.api.nvim_create_autocmd('ColorScheme', {
---   pattern = '*',
---   callback = function()
---     vim.cmd 'colorscheme deafault'
---   end,
--- })
 
 local function toggle_term()
   local term_win = find_term_window()
@@ -275,15 +203,11 @@ keymap('n', '<C-S-t>', create_term, { noremap = true, silent = true })
 keymap('n', '<C-/>', toggle_term, { noremap = true, silent = true })
 keymap('t', '<C-/>', toggle_term, { noremap = true, silent = true })
 
--- NOTE: Formatting
-
 keymap('n', '<leader>ff', function()
   require('conform').format()
 end, { desc = 'Format buffer' })
 
--- NOTE: Plugin Keymaps
-
-keymap('n', '<leader>ta', '<cmd>AvanteToggle<CR>', { desc = 'Toggle Oil.nvim' })
+keymap('n', '<M-/>', '<cmd>AvanteToggle<CR>', { desc = 'Toggle Avante.nvim' })
 
 -- Oil.nvim
 keymap('n', '-', '<cmd>Oil<CR>', { desc = 'Toggle Oil.nvim' })
@@ -320,8 +244,6 @@ keymap('n', '<leader>.', function()
   end
 end)
 
--- NOTE: Diagnostics
-
 keymap('n', '<leader>yt', function()
   virtual_text_enabled = not virtual_text_enabled
   vim.diagnostic.config {
@@ -355,10 +277,6 @@ keymap('n', '<leader>yh', function()
   }
 end)
 
--- ╭──────────────────────────────────────────────────────────╮
--- │                  Autocommands Options                    │
--- ╰──────────────────────────────────────────────────────────╯
-
 vim.cmd 'autocmd BufEnter * set formatoptions-=cro'
 vim.cmd 'autocmd BufEnter * setlocal formatoptions-=cro'
 
@@ -376,10 +294,6 @@ vim.api.nvim_create_autocmd('BufWinEnter', {
     vim.opt_local.conceallevel = 1
   end,
 })
-
--- ╭──────────────────────────────────────────────────────────╮
--- │                  Lazy Plugin Manager                     │
--- ╰──────────────────────────────────────────────────────────╯
 
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
 if not (vim.uv or vim.loop).fs_stat(lazypath) then
@@ -828,14 +742,15 @@ require('lazy').setup({
     end,
   },
 
-  -- {
-  --   'Mofiqul/vscode.nvim',
-  --   name = 'vscode',
-  --   priority = 1000,
-  --   init = function()
-  --     vim.cmd 'colorscheme vscode'
-  --   end,
-  -- },
+  {
+    'Mofiqul/vscode.nvim',
+    name = 'vscode',
+    priority = 1000,
+    init = function()
+      require('vscode').setup {}
+      vim.cmd 'colorscheme vscode'
+    end,
+  },
 
   -- Highlight todo, notes, etc in comments
   { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
@@ -1002,19 +917,4 @@ require('lazy').setup({
   {
     import = 'plugins',
   },
-}, {
-  ui = {
-    icons = vim.g.have_nerd_font and {} or {
-      cmd = '⌘',
-      config = '🛠',
-      event = '📅',
-      ft = '📂',
-      init = '⚙',
-      keys = '🗝',
-      plugin = '🔌',
-      runtime = '💻',
-      require = '🌙',
-      source = '📄',
-    },
-  },
-})
+}, {})

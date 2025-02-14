@@ -27,6 +27,20 @@ return {
         dismiss = '<C-]>',
       },
     },
+    windows = {
+      position = 'right', -- the position of the sidebar
+      wrap = true, -- similar to vim.o.wrap
+      width = 30, -- default % based on available width
+      sidebar_header = {
+        enabled = false, -- true, false to enable/disable the header
+      },
+      edit = {
+        start_insert = false, -- Start insert mode when opening the edit window
+      },
+      ask = {
+        start_insert = false, -- Start insert mode when opening the ask window
+      },
+    },
   },
   -- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
   build = 'make',
