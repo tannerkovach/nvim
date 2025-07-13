@@ -1,18 +1,16 @@
 vim.g.mapleader = ' '
-vim.g.maplocalleader = ' '
+vim.g.maplocalleader = ','
 vim.g.have_nerd_font = true
-
 vim.opt.number = true
 vim.opt.relativenumber = true
 vim.opt.mouse = 'a'
-vim.opt.showmode = false
+vim.opt.showmode = true
 vim.opt.clipboard = 'unnamedplus'
 vim.opt.breakindent = true
 vim.opt.undofile = true
 vim.opt.ignorecase = true
 vim.opt.smartcase = true
-vim.opt.signcolumn = 'yes'
-vim.opt.updatetime = 250
+vim.opt.signcolumn = 'no'
 vim.opt.list = true
 vim.opt.listchars = { tab = '▏ ', trail = '·', nbsp = '␣' }
 vim.opt.tabstop = 2
@@ -26,13 +24,13 @@ vim.o.laststatus = 3
 vim.opt.wrap = false
 vim.opt.linebreak = false
 vim.opt.sidescroll = 1
-vim.o.cmdheight = 0
 vim.o.splitbelow = true
 vim.o.splitright = true
 vim.o.conceallevel = 0
 
 local keymap = vim.keymap.set
 
+-- General/misc.
 keymap('n', '<C-b>', '<C-^>', { desc = 'Alternate Buffer' })
 keymap('n', '<Esc>', '<cmd>nohlsearch<CR>')
 keymap('x', 'y', 'mmy`m')
@@ -41,45 +39,24 @@ keymap('n', '<S-CR>', 'O<ESC>')
 keymap('x', 'p', 'P', { silent = true })
 keymap('n', 'R', '<C-r>')
 keymap('t', '<Esc><Esc>', '<C-\\><C-n>', { noremap = true, silent = true })
-keymap('t', '<C-n>', '<C-\\><C-n>', { noremap = true, silent = true })
-keymap('n', 'FF', ':w<CR>', { noremap = true, silent = true })
-keymap('n', 'YY', ':%y<CR>', { noremap = true, silent = true })
-keymap('n', 'QQ', function()
-  vim.cmd 'wa!'
-  vim.cmd 'qa!'
-end, { silent = true })
+keymap('n', '<Up>', 'gk')
+keymap('n', '<Down>', 'gj')
+keymap('n', 'Dst', '<Plug>(nvim-surround-delete)tdd}dd<C-o>')
+keymap({ 'n', 'x' }, '<localleader>d', '"_d')
+keymap({ 'n', 'x' }, '<localleader>D', 'V"_d')
+keymap('n', 'u', function()
+  if vim.v.count > 0 then
+    return '<Esc>'
+  else
+    return 'u'
+  end
+end, { expr = true })
 
 -- Splits
 keymap('n', '<leader>sv', '<C-w>v', { desc = 'Split window vertically' })
 keymap('n', '<leader>sz', '<C-w>s', { desc = 'Split window horizontally' })
 keymap('n', '<leader>sq', '<C-w>=', { desc = 'Make splits equal size' })
 keymap('n', '<leader>sx', '<cmd>close<CR>', { desc = 'Close current split' })
-
--- Tabs
-keymap('n', '<leader>to', '<cmd>tabnew<CR>', { desc = 'Open new tab' })
-keymap('n', '<leader>tx', '<cmd>tabclose<CR>', { desc = 'Close current tab' })
-keymap('n', '<leader>tn', '<cmd>tabn<CR>', { desc = 'Go to next tab' })
-keymap('n', '<leader>tp', '<cmd>tabp<CR>', { desc = 'Go to previous tab' })
-keymap('n', '<leader>tf', '<cmd>tabnew %<CR>', { desc = 'Open current buffer in new tab' })
-keymap('n', '<M-p>', '<cmd>tabn<CR>', { desc = 'Go to next tab' })
-keymap('n', '<M-e>', '<cmd>tabp<CR>', { desc = 'Go to previous tab' })
-
--- Buffers
-keymap('n', '<leader>fn', ':bnext<CR>', { desc = 'Next Buffer' })
-keymap('n', '<leader>fp', ':bprev<CR>', { desc = 'Prev Buffer' })
-keymap('n', '<leader>fx', ':bdelete<CR>', { desc = 'Delete Buffer' })
-
--- Terminal Buffers
-keymap('t', '<C-S-t>', function()
-  vim.cmd 'terminal'
-  vim.cmd 'startinsert'
-end, { desc = 'New Terminal' })
-
-keymap('t', '<C-t>', '<cmd>BufTermNext<CR>', { desc = 'Next Terminal Buffer' })
-keymap('t', '<C-p>', '<cmd>BufTermPrev<CR>', { desc = 'Next Terminal Buffer' })
-keymap('n', '<C-t>', '<cmd>BufTermNext<CR>', { desc = 'Next Terminal Buffer' })
-keymap('n', '<C-p>', '<cmd>BufTermPrev<CR>', { desc = 'Next Terminal Buffer' })
-
 keymap('t', '<C-Left>', function()
   vim.cmd.wincmd 'h'
 end, { noremap = true, silent = true })
@@ -93,139 +70,23 @@ keymap('t', '<C-Up>', function()
   vim.cmd.wincmd 'k'
 end, { noremap = true, silent = true })
 
-keymap('n', '<C-Left>', function()
-  vim.cmd.wincmd 'h'
-end, { noremap = true, silent = true })
-keymap('n', '<C-Right>', function()
-  vim.cmd.wincmd 'l'
-end, { noremap = true, silent = true })
-keymap('n', '<C-Down>', function()
-  vim.cmd.wincmd 'j'
-end, { noremap = true, silent = true })
-keymap('n', '<C-Up>', function()
-  vim.cmd.wincmd 'k'
-end, { noremap = true, silent = true })
+-- Tabs
+keymap('n', '<leader>to', '<cmd>tabnew<CR>', { desc = 'Open new tab' })
+keymap('n', '<leader>tx', '<cmd>tabclose<CR>', { desc = 'Close current tab' })
+keymap('n', '<leader>tn', '<cmd>tabn<CR>', { desc = 'Go to next tab' })
+keymap('n', '<leader>tp', '<cmd>tabp<CR>', { desc = 'Go to previous tab' })
+keymap('n', '<leader>tf', '<cmd>tabnew %<CR>', { desc = 'Open current buffer in new tab' })
 
-local function is_term_buffer(bufnr)
-  return vim.bo[bufnr].buftype == 'terminal'
-end
+-- Buffers
+keymap('n', '<leader>fn', ':bnext<CR>', { desc = 'Next Buffer' })
+keymap('n', '<leader>fp', ':bprev<CR>', { desc = 'Prev Buffer' })
+keymap('n', '<leader>fx', ':bd!<CR>', { desc = 'Delete Buffer' })
 
-local function get_term_buffers()
-  local term_bufs = {}
-  for _, buf in ipairs(vim.api.nvim_list_bufs()) do
-    if is_term_buffer(buf) then
-      table.insert(term_bufs, buf)
-    end
-  end
-  return term_bufs
-end
-
-local function find_term_window()
-  for _, win in ipairs(vim.api.nvim_list_wins()) do
-    local buf = vim.api.nvim_win_get_buf(win)
-    if is_term_buffer(buf) then
-      return win
-    end
-  end
-  return nil
-end
-
-local function delete_current_term()
-  local current_buf = vim.api.nvim_get_current_buf()
-
-  if not is_term_buffer(current_buf) then
-    return
-  end
-
-  local term_bufs = get_term_buffers()
-
-  for i, buf in ipairs(term_bufs) do
-    if buf == current_buf then
-      table.remove(term_bufs, i)
-      break
-    end
-  end
-
-  if #term_bufs > 0 then
-    local windows = vim.fn.win_findbuf(current_buf)
-
-    for _, win in ipairs(windows) do
-      if vim.api.nvim_win_is_valid(win) then
-        vim.api.nvim_win_set_buf(win, term_bufs[1])
-      end
-    end
-  end
-
-  vim.api.nvim_buf_delete(current_buf, { force = true })
-end
-
-local function create_term()
-  vim.cmd.new()
-  vim.cmd.term()
-  vim.api.nvim_win_set_height(0, 15)
-  vim.cmd.startinsert()
-
-  -- Create autocommand for this specific buffer
-  local bufnr = vim.api.nvim_get_current_buf()
-  vim.api.nvim_create_autocmd('BufEnter', {
-    buffer = bufnr,
-    callback = function()
-      vim.cmd.startinsert()
-    end,
-  })
-end
-
-local function toggle_term()
-  local term_win = find_term_window()
-  local term_bufs = get_term_buffers()
-
-  if term_win then
-    -- Terminal window exists, hide it
-    pcall(vim.api.nvim_win_close, term_win, true)
-  else
-    -- No terminal window visible
-    if #term_bufs > 0 then
-      -- Reuse existing terminal buffer
-      vim.cmd.new()
-      vim.api.nvim_win_set_height(0, 15)
-      vim.api.nvim_win_set_buf(0, term_bufs[1])
-      vim.cmd.startinsert()
-    else
-      -- Create new terminal if none exist
-      create_term()
-    end
-  end
-end
-
--- Map keys for terminal management
-keymap('t', '<C-d>', delete_current_term, { noremap = true, silent = true })
-keymap('n', '<C-S-t>', create_term, { noremap = true, silent = true })
-keymap('n', '<C-/>', toggle_term, { noremap = true, silent = true })
-keymap('t', '<C-/>', toggle_term, { noremap = true, silent = true })
-
-keymap('n', '<leader>ff', function()
-  require('conform').format()
-end, { desc = 'Format buffer' })
-
-keymap('n', '<M-/>', '<cmd>AvanteToggle<CR>', { desc = 'Toggle Avante.nvim' })
-
--- Oil.nvim
+-- Plugins
 keymap('n', '-', '<cmd>Oil<CR>', { desc = 'Toggle Oil.nvim' })
-
--- MiniDiff
 keymap('n', '<leader>dt', function()
   MiniDiff.toggle_overlay()
 end, { desc = 'Toggle diff overlay' })
-
--- CodeCompanion
-keymap('n', '<C-a>', '<cmd>CodeCompanionActions<cr>', { noremap = true, silent = true })
-keymap('v', '<C-a>', '<cmd>CodeCompanionActions<cr>', { noremap = true, silent = true })
-keymap('n', '<leader>cc', '<cmd>CodeCompanionChat Toggle<cr>', { noremap = true, silent = true })
-keymap('v', '<leader>cc', '<cmd>CodeCompanionChat Toggle<cr>', { noremap = true, silent = true })
-keymap('n', '<leader>cn', '<cmd>CodeCompanionChat<cr>', { noremap = true, silent = true })
-keymap('v', 'ga', '<cmd>CodeCompanionChat Add<cr>', { noremap = true, silent = true })
-
-vim.cmd [[cab cc CodeCompanion]]
 
 keymap('n', '<leader>.', function()
   local neogit_win = nil
@@ -244,12 +105,23 @@ keymap('n', '<leader>.', function()
   end
 end)
 
+keymap('n', '<leader>tb', function()
+  if vim.o.background == 'light' then
+    vim.o.background = 'dark'
+    vim.notify('Dark mode enabled', vim.log.levels.INFO)
+  else
+    vim.o.background = 'light'
+    vim.notify('Light mode enabled', vim.log.levels.INFO)
+  end
+end, { desc = 'Toggle background light/dark' })
+
 keymap('n', '<leader>yt', function()
   virtual_text_enabled = not virtual_text_enabled
   vim.diagnostic.config {
     virtual_text = virtual_text_enabled,
   }
 end)
+
 keymap('n', '<leader>yd', function()
   vim.diagnostic.config {
     virtual_text = {
@@ -307,8 +179,8 @@ vim.opt.rtp:prepend(lazypath)
 
 require('lazy').setup({
 
-  -- 'tpope/vim-sleuth',
   'tpope/vim-repeat',
+  'sindrets/diffview.nvim',
 
   { 'junegunn/fzf', build = './install --bin' },
 
@@ -360,6 +232,11 @@ require('lazy').setup({
           },
         },
         pickers = {
+          buffers = {
+            ignore_current_buffer = true,
+            sort_mru = true,
+            sort_lastused = true,
+          },
           live_grep = {
             vimgrep_arguments = {
               'rg',
@@ -471,15 +348,6 @@ require('lazy').setup({
           --  Useful when your language has ways of declaring types without an actual implementation.
           map('gI', require('telescope.builtin').lsp_implementations, '[G]oto [I]mplementation')
 
-          -- Jump to the type of the word under your cursor.
-          --  Useful when you're not sure what type a variable is and you want to see
-          --  the definition of its *type*, not where it was *defined*.
-          map('<leader>D', require('telescope.builtin').lsp_type_definitions, 'Type [D]efinition')
-
-          -- Fuzzy find all the symbols in your current document.
-          --  Symbols are things like variables, functions, types, etc.
-          map('<leader>ds', require('telescope.builtin').lsp_document_symbols, '[D]ocument [S]ymbols')
-
           -- Fuzzy find all the symbols in your current workspace.
           --  Similar to document symbols, except searches over your entire project.
           map('<leader>ws', require('telescope.builtin').lsp_dynamic_workspace_symbols, '[W]orkspace [S]ymbols')
@@ -585,47 +453,6 @@ require('lazy').setup({
     end,
   },
 
-  { -- Autoformat
-    'stevearc/conform.nvim',
-    event = { 'BufWritePre' },
-    cmd = { 'ConformInfo' },
-    keys = {
-      {
-        '<leader>f',
-        function()
-          require('conform').format { async = true, lsp_format = 'fallback' }
-        end,
-        mode = '',
-        desc = '[F]ormat buffer',
-      },
-    },
-    opts = {
-      notify_on_error = false,
-      format_on_save = function(bufnr)
-        -- Disable "format_on_save lsp_fallback" for languages that don't
-        -- have a well standardized coding style. You can add additional
-        -- languages here or re-enable it for the disabled ones.
-        local disable_filetypes = { c = true, cpp = true, liquid = true }
-        local lsp_format_opt
-        if disable_filetypes[vim.bo[bufnr].filetype] then
-          lsp_format_opt = 'never'
-        else
-          lsp_format_opt = 'fallback'
-        end
-        return {
-          timeout_ms = 500,
-          lsp_format = lsp_format_opt,
-        }
-      end,
-      formatters_by_ft = {
-        lua = { 'stylua' },
-        -- javascript = { 'prettier' },
-        -- liquid = { 'prettier' },
-        html = { 'prettier' },
-      },
-    },
-  },
-  --
   { -- Autocompletion
     'hrsh7th/nvim-cmp',
     event = 'InsertEnter',
@@ -743,12 +570,41 @@ require('lazy').setup({
   },
 
   {
+    'catppuccin/nvim',
+    name = 'catppuccin',
+    priority = 1000,
+    config = function()
+      require('catppuccin').setup {
+        flavour = 'latte', -- Available flavours: latte, frappe, macchiato, mocha
+      }
+      vim.cmd.colorscheme 'catppuccin-latte'
+    end,
+  },
+
+  {
     'Mofiqul/vscode.nvim',
     name = 'vscode',
     priority = 1000,
-    init = function()
-      require('vscode').setup {}
-      vim.cmd 'colorscheme vscode'
+    config = function()
+      require('vscode').setup {
+        -- Enable transparent background
+        transparent = false,
+        -- Enable italic comment
+        italic_comments = true,
+      }
+    end,
+  },
+
+  {
+    'sainnhe/everforest',
+    lazy = false,
+    priority = 1000,
+    config = function()
+      -- Optionally configure and load the colorscheme
+      -- directly inside the plugin declaration.
+      -- vim.g.everforest_enable_italic = true
+      -- vim.g.everforest_background = 'hard'
+      -- vim.cmd.colorscheme 'everforest'
     end,
   },
 
@@ -771,21 +627,40 @@ require('lazy').setup({
       -- - saiw) - [S]urround [A]dd [I]nner [W]ord [)]Paren
       -- - sd'   - [S]urround [D]elete [']quotes
       -- - sr)'  - [S]urround [R]eplace [)] [']
-      require('mini.surround').setup {
+      -- require('mini.surround').setup {
+      --   mappings = {
+      --     add = '<leader>xa',
+      --     delete = '<leader>xx',
+      --     find = '<leader>xf',
+      --     find_left = '<leader>xF',
+      --     highlight = '<leader>xh',
+      --     replace = '<leader>xr',
+      --     update_n_lines = '<leader>xn',
+      --
+      --     suffix_last = 'l',
+      --     suffix_next = 'n',
+      --   },
+      -- }
+      require('mini.move').setup {
         mappings = {
-          add = '<leader>xa',
-          delete = '<leader>xx',
-          find = '<leader>xf',
-          find_left = '<leader>xF',
-          highlight = '<leader>xh',
-          replace = '<leader>xr',
-          update_n_lines = '<leader>xn',
-
-          suffix_last = 'l',
-          suffix_next = 'n',
+          left = '<M-S-Left>',
+          right = '<M-S-right>',
+          up = '<M-S-Up>',
+          down = '<M-S-Down>',
+          line_left = '<M-S-Left>',
+          line_right = '<M-S-right>',
+          line_up = '<M-S-Up>',
+          line_down = '<M-S-Down>',
         },
       }
-      require('mini.move').setup()
+      require('mini.splitjoin').setup {
+        mappings = {
+          toggle = '<localleader>s',
+          split = '',
+          join = '',
+        },
+      }
+      require('mini.cursorword').setup()
       require('mini.files').setup {
         content = {
           filter = nil,
@@ -903,9 +778,9 @@ require('lazy').setup({
         -- Some languages depend on vim's regex highlighting system (such as Ruby) for indent rules.
         --  If you are experiencing weird indenting issues, add the language to
         --  the list of additional_vim_regex_highlighting and disabled languages for indent.
-        additional_vim_regex_highlighting = { 'ruby' },
+        additional_vim_regex_highlighting = { 'ruby', 'scss' },
       },
-      indent = { enable = true, disable = { 'ruby' } },
+      indent = { enable = true, disable = { 'ruby', 'scss' } },
     },
     -- There are additional nvim-treesitter modules that you can use to interact
     -- with nvim-treesitter. You should go explore a few and see what interests you:

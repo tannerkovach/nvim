@@ -10,7 +10,7 @@ return {
     workspaces = {
       {
         name = 'personal',
-        path = '~/Documents/Notes',
+        path = '~/Documents/notes',
       },
     },
     templates = {
