@@ -7,12 +7,20 @@ return {
     conform.setup {
       formatters_by_ft = {
         lua = { 'stylua' },
+        javascript = { 'prettier' },
+        typescript = { 'prettier' },
+        javascriptreact = { 'prettier' },
+        typescriptreact = { 'prettier' },
+        jsx = { 'prettier' },
+        tsx = { 'prettier' },
+        json = { 'prettier' },
+        html = { 'prettier' },
       },
-      format_on_save = {
-        lsp_fallback = true,
-        async = false,
-        timeout_ms = 1000,
-      },
+      -- format_on_save = {
+      --   lsp_fallback = false,
+      --   async = false,
+      --   timeout_ms = 1000,
+      -- },
     }
 
     vim.keymap.set({ 'n', 'v' }, '<leader>mp', function()

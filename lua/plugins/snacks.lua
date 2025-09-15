@@ -6,45 +6,18 @@ return {
     bigfile = { enabled = true },
     notifier = {
       enabled = true,
-      timeout = 3500,
+      timeout = 4500,
     },
     quickfile = { enabled = true },
-    -- statuscolumn = {
-    --   enabled = true,
-    --   left = { 'mark', 'sign' }, -- priority of signs on the left (high to low)
-    --   right = { 'fold', 'git' }, -- priority of signs on the right (high to low)
-    --   folds = {
-    --     open = true, -- show open fold icons
-    --     git_hl = true, -- use Git Signs hl for fold icons
-    --   },
-    --   git = {
-    --     -- patterns to match Git signs
-    --     patterns = { 'GitSign', 'MiniDiffSign' },
-    --   },
-    --   refresh = 50, -- refresh at most every 50ms
-    -- },
     words = { enabled = true },
     styles = {
       notification = {
         wo = { wrap = true }, -- Wrap notifications
       },
     },
-    scroll = { enabled = false },
     indent = { enabled = true },
-    -- animate = {
-    --   duration = 20, -- ms per step
-    --   easing = 'linear',
-    --   fps = 60, -- frames per second. Global setting for all animations
-    -- },
   },
   keys = {
-    {
-      '<leader>Z',
-      function()
-        Snacks.zen.zoom()
-      end,
-      desc = 'Toggle Zoom',
-    },
     {
       '<leader>sb',
       function()
@@ -66,7 +39,6 @@ return {
       end,
       desc = 'Notification History',
     },
-    -- { "<leader>bd", function() Snacks.bufdelete() end, desc = "Delete Buffer" },
     {
       '<leader>cR',
       function()

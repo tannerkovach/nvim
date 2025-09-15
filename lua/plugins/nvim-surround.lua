@@ -4,7 +4,15 @@ return {
   event = 'VeryLazy',
   config = function()
     require('nvim-surround').setup {
-      -- Configuration here, or leave empty to use defaults
+      -- keymaps = {
+      --   normal = "gs",
+      --   normal_cur = "gss",
+      --   normal_line = "gS",
+      --   normal_cur_line = "gSS",
+      --   visual = "gS",
+      --   delete = "gds",
+      --   change = "gcs",
+      -- },     -- Configuration here, or leave empty to use defaults
     }
   end,
 }
