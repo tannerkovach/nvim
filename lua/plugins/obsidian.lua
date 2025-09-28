@@ -10,7 +10,27 @@ return {
     workspaces = {
       {
         name = 'personal',
-        path = '~/Documents/Writing',
+        path = '~/Documents/Notes/',
+      },
+      {
+        name = 'personal',
+        path = '~/Documents/Writing/',
+      },
+      {
+        name = "no-vault",
+        path = function()
+          -- alternatively use the CWD:
+          -- return assert(vim.fn.getcwd())
+          return assert(vim.fs.dirname(vim.api.nvim_buf_get_name(0)))
+        end,
+        overrides = {
+          notes_subdir = vim.NIL,  -- have to use 'vim.NIL' instead of 'nil'
+          new_notes_location = "current_dir",
+          templates = {
+            folder = vim.NIL,
+          },
+          disable_frontmatter = true,
+        },
       },
     },
     ui = {
@@ -22,9 +42,6 @@ return {
         -- NOTE: the 'char' value has to be a single character, and the highlight groups are defined below.
         [' '] = { char = '󰄱', hl_group = 'ObsidianTodo' },
         ['x'] = { char = '', hl_group = 'ObsidianDone' },
-        ['>'] = { char = '', hl_group = 'ObsidianRightArrow' },
-        ['~'] = { char = '󰰱', hl_group = 'ObsidianTilde' },
-        ['!'] = { char = '', hl_group = 'ObsidianImportant' },
         -- Replace the above with this if you don't have a patched font:
         -- [" "] = { char = "☐", hl_group = "ObsidianTodo" },
         -- ["x"] = { char = "✔", hl_group = "ObsidianDone" },

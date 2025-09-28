@@ -29,6 +29,8 @@ vim.o.splitbelow = true
 vim.o.splitright = true
 vim.o.conceallevel = 0
 vim.opt.autoread = true
+vim.opt.background = 'light'
+
 
 local keymap = vim.keymap.set
 
@@ -165,6 +167,7 @@ vim.cmd 'autocmd BufEnter * set formatoptions-=cro' -- Disable Neovim comment co
 
 -- LSP
 vim.lsp.enable('lua_ls')
+vim.lsp.enable('copilot_ls')
 vim.lsp.enable('tailwindcss')
 
 -- Lazy Plugin
