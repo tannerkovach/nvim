@@ -1,4 +1,3 @@
--- Options
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ','
 vim.g.have_nerd_font = true
@@ -127,6 +126,10 @@ keymap('n', '<leader>dt', function()
   MiniDiff.toggle_overlay()
 end, { desc = 'Toggle diff overlay' })
 
+-- Leap Plugin Keymaps
+keymap({'n', 'x', 'o'}, 's', '<Plug>(leap)')
+keymap('n','S', '<Plug>(leap-from-window)')
+
 -- NvimSurround Keymaps
 keymap('n', 'Dst', '<Plug>(nvim-surround-delete)tdd}dd<C-o>')
 
@@ -156,18 +159,30 @@ vim.api.nvim_create_autocmd('FileType', { -- Sets conceallevel for Obsidian plug
   end,
 })
 
+local function set_custom_highlights()
+  -- vim.api.nvim_set_hl(0, "NormalFloat", { bg = "#0a2a2a" })
+  -- vim.api.nvim_set_hl(0, "FloatBorder", { link = "NormalFloat" })
+  -- vim.api.nvim_set_hl(0, "LineNr", {  bg = "#0a2a2a" })
+  -- vim.api.nvim_set_hl(0, "LineNrAbove", { bg = "#0a2a2a" })
+  -- vim.api.nvim_set_hl(0, "LineNrBelow", { bg = "#0a2a2a" })
+  -- vim.api.nvim_set_hl(0, "SignColumn", { bg = "#0a2a2a" })
+  -- vim.api.nvim_set_hl(0, "LineNr", { bg = "#2e323a" })
+  vim.api.nvim_set_hl(0, 'FlashLabel', { fg = '#2e5e00', bg = '#80ffb8', bold = true })
+  vim.api.nvim_set_hl(0, 'LeapLabel', { fg = '#2e5e00', bg = '#80ffb8', bold = true })
+end
+
+-- Create an autocmd to apply custom highlights after any ColorScheme is set
 vim.api.nvim_create_autocmd("ColorScheme", {
   pattern = "*",
-  callback = function()
-    vim.api.nvim_set_hl(0, 'FlashLabel', { fg = '#2e5e00', bg = '#80ffb8', bold = true })
-  end,
+  callback = set_custom_highlights,
 })
+
+set_custom_highlights()
 
 vim.cmd 'autocmd BufEnter * set formatoptions-=cro' -- Disable Neovim comment continuation
 
 -- LSP
 vim.lsp.enable('lua_ls')
-vim.lsp.enable('copilot_ls')
 vim.lsp.enable('tailwindcss')
 
 -- Lazy Plugin

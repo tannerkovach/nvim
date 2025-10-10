@@ -1,7 +1,7 @@
 return {
   'echasnovski/mini.nvim',
   config = function()
-    vim.cmd.colorscheme 'minispring'
+    vim.cmd.colorscheme 'miniwinter'
     vim.api.nvim_set_hl(0, 'FlashLabel', { fg = '#2e5e00', bg = '#80ffb8', bold = true })
 
     require('mini.ai').setup { n_lines = 500 }
