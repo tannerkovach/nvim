@@ -4,6 +4,9 @@ return {
   lazy = false,
   opts = {
     bigfile = { enabled = true },
+    dashboard = {
+      example = "doom"
+    },
     notifier = {
       enabled = true,
       timeout = 4500,
@@ -15,7 +18,12 @@ return {
         wo = { wrap = true }, -- Wrap notifications
       },
     },
-    indent = { enabled = true },
+    indent = {
+      enabled = true,
+      animate = {
+        enabled = false,
+      },
+    },
   },
   keys = {
     {

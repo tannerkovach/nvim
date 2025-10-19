@@ -2,6 +2,7 @@
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ','
 vim.g.have_nerd_font = true
+vim.opt.showtabline = 2
 vim.opt.hlsearch = false
 vim.opt.number = true
 vim.opt.relativenumber = true
@@ -32,6 +33,18 @@ vim.o.conceallevel = 0
 vim.opt.autoread = true
 vim.opt.background = 'light'
 
+-- Diagnostics
+vim.diagnostic.config {
+  virtual_text = {
+    severity = { min = vim.diagnostic.severity.ERROR },
+  },
+  signs = {
+    severity = { min = vim.diagnostic.severity.ERROR },
+  },
+  underline = {
+    severity = { min = vim.diagnostic.severity.ERROR },
+  },
+}
 
 local keymap = vim.keymap.set
 
@@ -48,39 +61,13 @@ keymap('n', '<Up>', 'gk')
 keymap('n', '<Down>', 'gj')
 keymap('n', 'u', '<Nop>', { silent = true })
 keymap('n', '<S-u>', 'u', { silent = true })
+keymap('n', '<localleader>', '`', { silent = true })
 
 keymap('n', '<leader>yt', function()
+  local virtual_text_enabled
   virtual_text_enabled = not virtual_text_enabled
   vim.diagnostic.config {
     virtual_text = virtual_text_enabled,
-  }
-end)
-
-keymap('n', '<leader>yd', function()
-  vim.diagnostic.config {
-    virtual_text = {
-      severity = { min = vim.diagnostic.severity.WARN },
-    },
-    signs = {
-      severity = { min = vim.diagnostic.severity.WARN },
-    },
-    underline = {
-      severity = { min = vim.diagnostic.severity.WARN },
-    },
-  }
-end)
-
-keymap('n', '<leader>yh', function()
-  vim.diagnostic.config {
-    virtual_text = {
-      severity = { min = vim.diagnostic.severity.HINT },
-    },
-    signs = {
-      severity = { min = vim.diagnostic.severity.HINT },
-    },
-    underline = {
-      severity = { min = vim.diagnostic.severity.HINT },
-    },
   }
 end)
 
@@ -192,6 +179,15 @@ set_custom_highlights()
 vim.cmd 'autocmd BufEnter * set formatoptions-=cro' -- Disable Neovim comment continuation
 
 -- LSP
+vim.lsp.config('lua_ls', {
+  settings = {
+    Lua = {
+      diagnostics = {
+        globals = { 'vim' }
+      }
+    }
+  }
+})
 vim.lsp.enable('lua_ls')
 vim.lsp.enable('tailwindcss')
 
