@@ -6,7 +6,14 @@ return {
   ---@type blink.cmp.Config
   opts = {
     keymap = {
+      preset = 'none',
+      ['<C-n>'] = {
+        function(cmp)
+          return true 
+        end,
+      },
       ['<C-y>'] = { 'accept', 'fallback' },
+      ['<Right>'] = { 'accept', 'fallback' },
       ['<Up>'] = { 'select_prev' },
       ['<Down>'] = { 'select_next' },
     },

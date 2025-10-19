@@ -2,6 +2,7 @@
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ','
 vim.g.have_nerd_font = true
+vim.opt.hlsearch = false
 vim.opt.number = true
 vim.opt.relativenumber = true
 vim.opt.mouse = 'a'
@@ -11,7 +12,7 @@ vim.opt.breakindent = true
 vim.opt.undofile = true
 vim.opt.ignorecase = true
 vim.opt.smartcase = true
-vim.opt.signcolumn = 'no'
+vim.opt.signcolumn = 'auto'
 vim.opt.list = true
 vim.opt.listchars = { tab = '▏ ', trail = '·', nbsp = '␣' }
 vim.opt.tabstop = 2
@@ -128,8 +129,8 @@ keymap('n', '<leader>dt', function()
 end, { desc = 'Toggle diff overlay' })
 
 -- Leap Plugin Keymaps
-keymap({'n', 'x', 'o'}, 's', '<Plug>(leap)')
-keymap('n','S', '<Plug>(leap-from-window)')
+keymap({ 'n', 'x', 'o' }, 's', '<Plug>(leap)')
+keymap('n', 'S', '<Plug>(leap-from-window)')
 
 -- NvimSurround Keymaps
 keymap('n', 'Dst', '<Plug>(nvim-surround-delete)tdd}dd<C-o>')
@@ -160,14 +161,22 @@ vim.api.nvim_create_autocmd('FileType', { -- Sets conceallevel for Obsidian plug
   end,
 })
 
+vim.api.nvim_set_hl(0, 'YankHighlight', {
+  bg = '#80ffb8',
+  fg = '#2e5e00'
+})
+
+vim.api.nvim_create_autocmd('TextYankPost', {
+  desc = 'Highlight when yanking (copying) text',
+  callback = function()
+    vim.hl.on_yank({
+      higroup = 'YankHighlight',
+      timeout = 150,
+    })
+  end,
+})
+
 local function set_custom_highlights()
-  -- vim.api.nvim_set_hl(0, "NormalFloat", { bg = "#0a2a2a" })
-  -- vim.api.nvim_set_hl(0, "FloatBorder", { link = "NormalFloat" })
-  -- vim.api.nvim_set_hl(0, "LineNr", {  bg = "#0a2a2a" })
-  -- vim.api.nvim_set_hl(0, "LineNrAbove", { bg = "#0a2a2a" })
-  -- vim.api.nvim_set_hl(0, "LineNrBelow", { bg = "#0a2a2a" })
-  -- vim.api.nvim_set_hl(0, "SignColumn", { bg = "#0a2a2a" })
-  -- vim.api.nvim_set_hl(0, "LineNr", { bg = "#2e323a" })
   vim.api.nvim_set_hl(0, 'FlashLabel', { fg = '#2e5e00', bg = '#80ffb8', bold = true })
   vim.api.nvim_set_hl(0, 'LeapLabel', { fg = '#2e5e00', bg = '#80ffb8', bold = true })
 end
