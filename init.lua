@@ -2,8 +2,7 @@
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ','
 vim.g.have_nerd_font = true
-vim.opt.showtabline = 2
-vim.opt.hlsearch = false
+vim.opt.hlsearch = true
 vim.opt.number = true
 vim.opt.relativenumber = true
 vim.opt.mouse = 'a'
@@ -163,18 +162,17 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   end,
 })
 
-local function set_custom_highlights()
-  vim.api.nvim_set_hl(0, 'FlashLabel', { fg = '#2e5e00', bg = '#80ffb8', bold = true })
-  vim.api.nvim_set_hl(0, 'LeapLabel', { fg = '#2e5e00', bg = '#80ffb8', bold = true })
+local function colorscheme_autocmd_callback()
+  vim.api.nvim_set_hl(0, 'FlashLabel', { fg = '#80ffb8', bg = '#2e5e00', bold = true })
 end
 
 -- Create an autocmd to apply custom highlights after any ColorScheme is set
 vim.api.nvim_create_autocmd("ColorScheme", {
   pattern = "*",
-  callback = set_custom_highlights,
+  callback = colorscheme_autocmd_callback,
 })
 
-set_custom_highlights()
+colorscheme_autocmd_callback()
 
 vim.cmd 'autocmd BufEnter * set formatoptions-=cro' -- Disable Neovim comment continuation
 
