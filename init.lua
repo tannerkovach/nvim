@@ -30,7 +30,7 @@ vim.o.splitbelow = true
 vim.o.splitright = true
 vim.o.conceallevel = 0
 vim.opt.autoread = true
-vim.opt.background = 'light'
+vim.opt.background = 'dark'
 
 -- Diagnostics
 vim.diagnostic.config {
@@ -51,15 +51,12 @@ local keymap = vim.keymap.set
 keymap('n', '<C-b>', '<C-^>')
 keymap('n', '<Esc>', '<cmd>nohlsearch<CR>')
 keymap('x', 'y', 'mmy`m')
-keymap('n', '<CR>', 'o<ESC>')
-keymap('x', 'p', 'P', { silent = true })
-keymap('n', 'p', ':pu<CR>', { silent = true })
-keymap('n', 'R', '<C-r>')
 keymap('t', '<Esc><Esc>', '<C-\\><C-n>', { noremap = true, silent = true })
 keymap('n', '<Up>', 'gk')
 keymap('n', '<Down>', 'gj')
 keymap('n', 'u', '<Nop>', { silent = true })
 keymap('n', '<S-u>', 'u', { silent = true })
+keymap('n', '<S-r>', '<C-r>', { silent = true })
 keymap('n', '<localleader>', '`', { silent = true })
 
 keymap('n', '<leader>yt', function()
@@ -176,18 +173,18 @@ colorscheme_autocmd_callback()
 
 vim.cmd 'autocmd BufEnter * set formatoptions-=cro' -- Disable Neovim comment continuation
 
--- LSP
-vim.lsp.config('lua_ls', {
-  settings = {
-    Lua = {
-      diagnostics = {
-        globals = { 'vim' }
-      }
-    }
-  }
-})
-vim.lsp.enable('lua_ls')
-vim.lsp.enable('tailwindcss')
+-- -- LSP
+-- vim.lsp.config('lua_ls', {
+--   settings = {
+--     Lua = {
+--       diagnostics = {
+--         globals = { 'vim' }
+--       }
+--     }
+--   }
+-- })
+-- vim.lsp.enable('lua_ls')
+-- vim.lsp.enable('tailwindcss')
 
 -- Lazy Plugin
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
@@ -203,3 +200,5 @@ vim.opt.rtp:prepend(lazypath)
 require('lazy').setup({
   import = 'plugins',
 }, {})
+
+vim.cmd.colorscheme('tokyonight-night')

@@ -4,9 +4,6 @@ return {
   lazy = false,
   opts = {
     bigfile = { enabled = true },
-    dashboard = {
-      example = "doom"
-    },
     notifier = {
       enabled = true,
       timeout = 4500,

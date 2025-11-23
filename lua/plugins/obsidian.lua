@@ -10,18 +10,19 @@ return {
     workspaces = {
       {
         name = 'personal',
-        path = '~/Documents/Notes/',
-      },
-      {
-        name = 'personal',
-        path = '~/Documents/Writing/',
+        path = '~/Documents/',
       },
       {
         name = "no-vault",
         path = function()
+          local bufname = vim.api.nvim_buf_get_name(0)
+          -- Skip special buffers (oil, fugitive, etc.)
+          if bufname:match("^%w+:") then
+            return vim.fn.getcwd()
+          end
           -- alternatively use the CWD:
           -- return assert(vim.fn.getcwd())
-          return assert(vim.fs.dirname(vim.api.nvim_buf_get_name(0)))
+          return assert(vim.fs.dirname(bufname))
         end,
         overrides = {
           notes_subdir = vim.NIL,  -- have to use 'vim.NIL' instead of 'nil'
