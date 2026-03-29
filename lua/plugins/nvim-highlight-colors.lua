@@ -1,17 +1,10 @@
-return {
-  'brenoprata10/nvim-highlight-colors',
-  config = {
-    ---Render style
-    ---@usage 'background'|'foreground'|'virtual'
-    render = 'background',
+vim.pack.add({
+  "https://github.com/brenoprata10/nvim-highlight-colors",
+})
 
-    ---Set virtual symbol (requires render to be set to 'virtual')
-    virtual_symbol = '■',
-
-    ---Highlight named colors, e.g. 'green'
-    enable_named_colors = true,
-
-    ---Highlight tailwind colors, e.g. 'bg-blue-500'
-    enable_tailwind = true,
-  },
-}
+require("nvim-highlight-colors").setup({
+  render = "background",
+  virtual_symbol = "■",
+  enable_named_colors = true,
+  enable_tailwind = true,
+})

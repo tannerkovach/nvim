@@ -1,1 +1,3 @@
-return { 'junegunn/fzf', build = './install --bin' }
+vim.pack.add({
+  "https://github.com/junegunn/fzf",
+})
